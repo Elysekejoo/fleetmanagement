@@ -1,0 +1,2090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fleet Management System — MSH Rwanda</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+/* ═══════════════════════════════
+   TOKENS
+═══════════════════════════════ */
+:root {
+  --navy:       #0d1f3c;
+  --navy-2:     #162d52;
+  --navy-3:     #1e3a6a;
+  --blue:       #1a56db;
+  --blue-lt:    #eff5ff;
+  --gold:       #c9952c;
+  --gold-lt:    #fdf5e7;
+  --white:      #ffffff;
+  --bg:         #f7f8fa;
+  --bg-2:       #f0f1f4;
+  --border:     #e2e5eb;
+  --border-dk:  #c8ccd6;
+  --text:       #0d1117;
+  --text-2:     #3a3f4b;
+  --text-3:     #6b717f;
+  --green:      #157a3c;
+  --green-bg:   #edf7f1;
+  --green-bd:   #9fd3b6;
+  --red:        #9b1c1c;
+  --red-bg:     #fef2f2;
+  --red-bd:     #f5b4b4;
+  --yellow:     #7d5a00;
+  --yellow-bg:  #fffbeb;
+  --yellow-bd:  #f0d57a;
+  --sidebar-w:  256px;
+  --header-h:   60px;
+  --radius:     6px;
+  --radius-lg:  10px;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
+  --shadow:     0 4px 16px rgba(0,0,0,.08);
+  --trans:      .15s ease;
+}
+
+/* ═══════════════════════════════
+   RESET
+═══════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:inherit}
+ul{list-style:none}
+img{max-width:100%}
+.mi{font-family:'Material Icons';font-size:18px;vertical-align:middle;line-height:1;display:inline-block;user-select:none;flex-shrink:0}
+.mi-sm{font-size:15px}
+.mi-lg{font-size:22px}
+.mi-xl{font-size:32px}
+
+/* ═══════════════════════════════
+   SCROLLBAR
+═══════════════════════════════ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-dk);border-radius:3px}
+
+/* ═══════════════════════════════
+   BUTTONS
+═══════════════════════════════ */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;transition:var(--trans);white-space:nowrap;border:1.5px solid transparent}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-primary:hover{background:#1648c4;border-color:#1648c4}
+.btn-navy{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-navy:hover{background:var(--navy-2)}
+.btn-gold{background:var(--gold);color:#fff;border-color:var(--gold)}
+.btn-gold:hover{background:#b0841f}
+.btn-outline{background:var(--white);color:var(--text-2);border-color:var(--border-dk)}
+.btn-outline:hover{background:var(--bg);border-color:#aab}
+.btn-success{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-success:hover{background:#0f5e2d}
+.btn-danger{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-danger:hover{background:#7c1515}
+.btn-ghost{background:transparent;color:var(--text-3);border:none;padding:7px 10px}
+.btn-ghost:hover{background:var(--bg-2);color:var(--text)}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-full{width:100%;justify-content:center}
+.btn-icon{padding:7px;border-radius:var(--radius)}
+.btn-icon:hover{background:var(--bg-2)}
+
+/* ═══════════════════════════════
+   LOGIN PAGE
+═══════════════════════════════ */
+#loginPage{
+  min-height:100vh;background:var(--white);
+  display:flex;align-items:stretch;
+}
+.login-left{
+  flex:1;background:var(--navy);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:60px 64px;position:relative;overflow:hidden;
+}
+.login-left::before{
+  content:'';position:absolute;top:-120px;right:-80px;
+  width:400px;height:400px;border-radius:50%;
+  border:80px solid rgba(255,255,255,.04);
+}
+.login-left::after{
+  content:'';position:absolute;bottom:-100px;left:-60px;
+  width:320px;height:320px;border-radius:50%;
+  border:60px solid rgba(201,149,44,.08);
+}
+.login-brand{display:flex;align-items:center;gap:14px;margin-bottom:56px;position:relative;z-index:1}
+.login-logo{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--gold);display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:var(--navy);flex-shrink:0;
+}
+.login-brand-text strong{display:block;font-size:15px;font-weight:600;color:#fff;letter-spacing:.02em}
+.login-brand-text span{font-size:11px;color:#7a90b8}
+.login-hero h1{font-size:36px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:16px;position:relative;z-index:1}
+.login-hero h1 em{color:var(--gold);font-style:normal}
+.login-hero p{font-size:14px;color:#8a9fc4;line-height:1.7;max-width:360px;position:relative;z-index:1}
+.login-features{margin-top:48px;display:flex;flex-direction:column;gap:14px;position:relative;z-index:1}
+.login-feature{display:flex;align-items:center;gap:10px}
+.login-feature .mi{font-size:16px;color:var(--gold);opacity:.9}
+.login-feature span{font-size:13px;color:#8a9fc4}
+.login-right{
+  width:460px;background:var(--white);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:60px 56px;border-left:1px solid var(--border);
+}
+.login-form-head{margin-bottom:36px}
+.login-form-head h2{font-size:26px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.login-form-head p{font-size:13px;color:var(--text-3)}
+.demo-panel{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:28px;
+}
+.demo-panel .dp-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-bottom:10px}
+.demo-row{
+  display:flex;align-items:center;gap:10px;padding:7px 0;
+  border-bottom:1px solid var(--border);cursor:pointer;transition:var(--trans);
+}
+.demo-row:last-child{border-bottom:none}
+.demo-row:hover .dr-email{color:var(--blue)}
+.dr-badge{
+  font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;
+  background:var(--navy);color:#fff;white-space:nowrap;
+}
+.dr-badge.b-mgr{background:var(--blue)}
+.dr-badge.b-emp{background:var(--green)}
+.dr-badge.b-drv{background:var(--gold);color:var(--navy)}
+.dr-email{font-size:12px;color:var(--text-2);font-family:'DM Mono',monospace;flex:1}
+.dr-use{font-size:11px;color:var(--blue);display:flex;align-items:center;gap:3px}
+
+/* Form fields */
+.field{margin-bottom:18px}
+.field label{display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);margin-bottom:6px}
+.field input,.field select,.field textarea{
+  width:100%;padding:10px 13px;border:1.5px solid var(--border);
+  border-radius:var(--radius);font-size:14px;color:var(--text);
+  background:var(--white);outline:none;transition:var(--trans);
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.08)}
+.field textarea{resize:vertical;min-height:80px}
+.field-error{font-size:11px;color:var(--red);margin-top:4px;display:none}
+.field-note{font-size:11px;color:var(--text-3);margin-top:4px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+
+/* ═══════════════════════════════
+   APP SHELL
+═══════════════════════════════ */
+#mainApp{display:none;height:100vh;overflow:hidden;flex-direction:column}
+#mainApp.visible{display:flex}
+
+/* TOP BAR */
+.topbar{
+  height:var(--header-h);background:var(--white);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 24px 0 calc(var(--sidebar-w) + 24px);
+  flex-shrink:0;position:relative;z-index:50;
+}
+.topbar-left{flex:1;display:flex;align-items:center;gap:14px}
+.topbar-title{font-size:15px;font-weight:600;color:var(--navy)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-role-switch{
+  display:flex;align-items:center;gap:4px;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--radius);padding:3px;margin-right:8px;
+}
+.rsw-btn{
+  font-size:10px;font-weight:700;padding:4px 10px;border-radius:4px;
+  cursor:pointer;transition:var(--trans);color:var(--text-3);background:transparent;
+  text-transform:uppercase;letter-spacing:.05em;border:none;
+}
+.rsw-btn.on{background:var(--white);color:var(--navy);box-shadow:var(--shadow-sm)}
+.user-chip{
+  display:flex;align-items:center;gap:8px;
+  padding:4px 12px 4px 4px;border-radius:20px;
+  border:1px solid var(--border);background:var(--bg);
+}
+.u-avatar{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;
+}
+.u-meta strong{display:block;font-size:12px;font-weight:600;color:var(--text);line-height:1.2}
+.u-meta span{font-size:10px;color:var(--text-3)}
+.notif-btn{position:relative}
+.notif-dot{
+  position:absolute;top:2px;right:2px;width:8px;height:8px;
+  border-radius:50%;background:var(--red);border:2px solid var(--white);
+}
+
+/* BODY */
+.app-body{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar-w);background:var(--white);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;
+}
+.sidebar-org{
+  padding:18px 20px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.sidebar-logo{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--navy);display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:#fff;flex-shrink:0;letter-spacing:.04em;
+}
+.sidebar-org-name{font-size:12px;font-weight:600;color:var(--navy);line-height:1.3}
+.sidebar-org-name small{display:block;font-size:10px;color:var(--text-3);font-weight:400}
+.nav-section{padding:12px 0 4px}
+.nav-label{
+  padding:0 20px 4px;font-size:9px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.12em;color:var(--text-3);
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 20px;
+  color:var(--text-2);cursor:pointer;font-size:13px;font-weight:500;
+  border-left:3px solid transparent;transition:var(--trans);user-select:none;
+}
+.nav-item:hover{color:var(--navy);background:var(--bg)}
+.nav-item.on{color:var(--navy);background:var(--blue-lt);border-left-color:var(--blue)}
+.nav-item .mi{font-size:17px;color:var(--text-3)}
+.nav-item.on .mi{color:var(--blue)}
+.nav-badge{
+  margin-left:auto;background:var(--red-bg);color:var(--red);
+  font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;
+  border:1px solid var(--red-bd);
+}
+.sidebar-footer{
+  margin-top:auto;padding:14px 20px;
+  border-top:1px solid var(--border);
+  font-size:10px;color:var(--text-3);line-height:1.7;
+}
+
+/* MAIN CONTENT */
+.main-content{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.page{display:none;flex-direction:column;flex:1}
+.page.on{display:flex}
+.page-header{
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:16px 28px;display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.ph-left h1{font-size:20px;font-weight:700;color:var(--navy)}
+.ph-left p{font-size:12px;color:var(--text-3);margin-top:2px}
+.ph-right{display:flex;gap:8px;align-items:center}
+.page-body{padding:24px 28px;flex:1}
+
+/* ═══════════════════════════════
+   STAT GRID
+═══════════════════════════════ */
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.stat-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:18px 20px;
+  border-top:3px solid var(--border);transition:var(--trans);
+}
+.stat-card:hover{box-shadow:var(--shadow-sm)}
+.stat-card.s-navy{border-top-color:var(--navy)}
+.stat-card.s-blue{border-top-color:var(--blue)}
+.stat-card.s-gold{border-top-color:var(--gold)}
+.stat-card.s-green{border-top-color:var(--green)}
+.stat-card.s-red{border-top-color:var(--red)}
+.sc-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3)}
+.sc-value{font-size:30px;font-weight:700;color:var(--navy);margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.sc-sub{font-size:11px;color:var(--text-3)}
+
+/* ═══════════════════════════════
+   TABLE
+═══════════════════════════════ */
+.table-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.table-card+.table-card{margin-top:16px}
+.table-toolbar{
+  padding:12px 16px;background:var(--white);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.table-toolbar h3{font-size:13px;font-weight:600;color:var(--navy);flex:1}
+.search-input{
+  display:flex;align-items:center;gap:6px;
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:6px 10px;transition:var(--trans);
+}
+.search-input:focus-within{border-color:var(--blue)}
+.search-input input{border:none;outline:none;font-size:12px;width:160px;background:transparent;color:var(--text)}
+.search-input .mi{font-size:15px;color:var(--text-3)}
+.filter-sel{
+  border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:6px 10px;font-size:12px;background:var(--white);outline:none;
+  color:var(--text);cursor:pointer;transition:var(--trans);
+}
+.filter-sel:focus{border-color:var(--blue)}
+table{width:100%;border-collapse:collapse}
+thead th{
+  padding:10px 14px;text-align:left;
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--text-3);background:var(--bg);border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+tbody tr{border-bottom:1px solid #f3f4f6;transition:background var(--trans)}
+tbody tr:hover{background:#fafbfc}
+tbody tr:last-child{border-bottom:none}
+td{padding:11px 14px;font-size:13px;color:var(--text-2);vertical-align:middle}
+td strong{color:var(--text);font-weight:600}
+td.mono{font-family:'DM Mono',monospace;font-size:12px}
+.td-actions{display:flex;gap:5px;align-items:center}
+
+/* ═══════════════════════════════
+   PILLS / BADGES
+═══════════════════════════════ */
+.pill{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border-radius:4px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;
+  border-width:1px;border-style:solid;white-space:nowrap;
+}
+.pi-pending{background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)}
+.pi-approved{background:var(--green-bg);color:var(--green);border-color:var(--green-bd)}
+.pi-rejected{background:var(--red-bg);color:var(--red);border-color:var(--red-bd)}
+.pi-completed{background:var(--bg-2);color:var(--text-3);border-color:var(--border)}
+.pi-active{background:var(--blue-lt);color:var(--blue);border-color:#a0c0f0}
+.pi-available{background:var(--green-bg);color:var(--green);border-color:var(--green-bd)}
+.pi-in-use{background:var(--yellow-bg);color:var(--yellow);border-color:var(--yellow-bd)}
+.pi-maint{background:var(--red-bg);color:var(--red);border-color:var(--red-bd)}
+.pi-admin{background:#f0eeff;color:#4a20b0;border-color:#c0a8e8}
+.pi-manager{background:var(--blue-lt);color:var(--blue);border-color:#a0c0f0}
+.pi-employee{background:var(--bg-2);color:var(--text-2);border-color:var(--border)}
+.pi-driver{background:var(--gold-lt);color:var(--gold);border-color:#e0c07a}
+.pi-moving{background:var(--green-bg);color:var(--green);border-color:var(--green-bd)}
+.pi-idle{background:var(--blue-lt);color:var(--blue);border-color:#a0c0f0}
+.pi-upcoming{background:var(--blue-lt);color:var(--blue);border-color:#a0c0f0}
+
+/* ═══════════════════════════════
+   PANEL
+═══════════════════════════════ */
+.panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.panel-header{
+  padding:12px 16px;background:var(--bg);border-bottom:1px solid var(--border);
+  font-size:13px;font-weight:600;color:var(--navy);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.panel-body{padding:16px}
+.info-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:13px;
+}
+.info-row:last-child{border-bottom:none}
+.info-row .ik{color:var(--text-3);font-size:12px}
+.info-row .iv{font-weight:500;color:var(--text)}
+
+/* ═══════════════════════════════
+   MAP
+═══════════════════════════════ */
+.map-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.map-head{
+  padding:12px 16px;background:var(--white);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.map-head h3{font-size:13px;font-weight:600;color:var(--navy);flex:1}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+.live-text{font-size:11px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:5px}
+.map-canvas{height:320px;background:#e8eaf0;position:relative;overflow:hidden}
+.map-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(13,31,60,.04) 1px,transparent 1px),
+                    linear-gradient(90deg,rgba(13,31,60,.04) 1px,transparent 1px);
+  background-size:36px 36px;
+}
+.map-road{position:absolute;background:#ccc8be}
+.map-road.h{height:4px;border-radius:2px}
+.map-road.v{width:4px;border-radius:2px}
+.map-road.main{background:#b5ae98;height:6px}
+.map-road.mainv{background:#b5ae98;width:6px}
+.map-city-label{
+  position:absolute;font-size:10px;font-weight:700;
+  color:#4a3c20;text-transform:uppercase;letter-spacing:.05em;
+  transform:translate(-50%,-50%);white-space:nowrap;
+  text-shadow:0 0 6px #e8eaf0;
+}
+.map-vehicle{position:absolute;transform:translate(-50%,-50%);cursor:pointer;z-index:10}
+.mv-dot{
+  width:24px;height:24px;border-radius:50%;
+  border:3px solid var(--white);box-shadow:0 2px 8px rgba(0,0,0,.25);
+  display:flex;align-items:center;justify-content:center;
+  transition:left .9s ease,top .9s ease;
+}
+.mv-dot.moving{background:var(--green)}
+.mv-dot.idle{background:var(--blue)}
+.mv-dot.stopped{background:var(--gold)}
+.mv-dot .mi{font-size:12px;color:#fff}
+.mv-label{
+  position:absolute;top:-22px;left:50%;transform:translateX(-50%);
+  background:var(--navy);color:#fff;
+  font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;
+  white-space:nowrap;pointer-events:none;
+}
+.map-legend{
+  padding:8px 16px;border-top:1px solid var(--border);
+  display:flex;gap:16px;font-size:11px;color:var(--text-3);background:var(--white);
+}
+.legend-item{display:flex;align-items:center;gap:5px}
+.legend-dot{width:9px;height:9px;border-radius:50%;border:2px solid rgba(255,255,255,.7)}
+
+/* ═══════════════════════════════
+   MODAL
+═══════════════════════════════ */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(13,31,60,.45);z-index:500;
+  align-items:center;justify-content:center;padding:16px;
+}
+.overlay.on{display:flex}
+.modal{
+  background:var(--white);border-radius:var(--radius-lg);
+  width:100%;max-width:520px;max-height:92vh;overflow-y:auto;
+  box-shadow:var(--shadow);
+}
+.modal-lg{max-width:680px}
+.modal-header{
+  background:var(--navy);color:#fff;padding:16px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:2;
+}
+.modal-header h2{font-size:15px;font-weight:600}
+.modal-close{color:#8a9fc4;font-size:22px;cursor:pointer;line-height:1;background:none;border:none;padding:0;transition:var(--trans)}
+.modal-close:hover{color:#fff}
+.modal-body{padding:22px}
+.modal-footer{
+  padding:14px 22px;border-top:1px solid var(--border);
+  display:flex;gap:8px;justify-content:flex-end;background:var(--bg);
+  position:sticky;bottom:0;
+}
+
+/* ═══════════════════════════════
+   TABS
+═══════════════════════════════ */
+.tabs-bar{display:flex;border-bottom:2px solid var(--border);margin-bottom:20px;gap:0}
+.tab-btn{
+  padding:10px 20px;font-size:13px;font-weight:500;color:var(--text-3);
+  cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;
+  background:none;border-top:none;border-left:none;border-right:none;
+  transition:var(--trans);
+}
+.tab-btn:hover{color:var(--text-2)}
+.tab-btn.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+.tab-pane{display:none}
+.tab-pane.on{display:block}
+
+/* ═══════════════════════════════
+   TOAST
+═══════════════════════════════ */
+.toast-wrap{position:fixed;top:70px;right:20px;z-index:900;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{
+  background:var(--navy);color:#fff;
+  padding:11px 16px;border-radius:var(--radius);
+  font-size:13px;border-left:4px solid var(--gold);
+  box-shadow:var(--shadow);max-width:310px;animation:toastIn .25s ease;
+  pointer-events:all;display:flex;align-items:center;gap:8px;
+}
+.toast.t-success{border-left-color:var(--green)}
+.toast.t-error{border-left-color:var(--red)}
+.toast.t-info{border-left-color:var(--blue)}
+@keyframes toastIn{from{transform:translateX(12px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ═══════════════════════════════
+   ALERT
+═══════════════════════════════ */
+.alert{padding:10px 14px;border-radius:var(--radius);border-left:4px solid;font-size:13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px}
+.alert-info{background:var(--blue-lt);border-color:var(--blue);color:#1a3a8a}
+.alert-warn{background:var(--yellow-bg);border-color:var(--gold);color:var(--yellow)}
+.alert-danger{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.alert .mi{font-size:16px;flex-shrink:0;margin-top:1px}
+
+/* ═══════════════════════════════
+   BAR CHARTS
+═══════════════════════════════ */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar-label{width:110px;font-size:12px;color:var(--text-2);flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;background:var(--bg-2);border-radius:3px;height:20px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;color:#fff;min-width:24px}
+
+/* ═══════════════════════════════
+   PROGRESS
+═══════════════════════════════ */
+.prog-bar{background:var(--bg-2);border-radius:2px;height:4px;overflow:hidden;margin-top:4px}
+.prog-fill{height:100%;border-radius:2px;background:var(--blue)}
+
+/* ═══════════════════════════════
+   TRIP CARD (driver)
+═══════════════════════════════ */
+.trip-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:16px;
+  transition:var(--trans);
+}
+.trip-card:hover{box-shadow:var(--shadow-sm)}
+.trip-icon{
+  width:44px;height:44px;background:var(--navy);border-radius:var(--radius);
+  display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;
+}
+.trip-card-body{flex:1}
+.trip-card-title{font-size:14px;font-weight:600;color:var(--navy)}
+.trip-card-meta{font-size:12px;color:var(--text-3);margin-top:3px}
+
+/* ═══════════════════════════════
+   SECTION DIVIDER
+═══════════════════════════════ */
+.section-div{
+  display:flex;align-items:center;gap:10px;margin:20px 0 14px;
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);
+}
+.section-div::before,.section-div::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ═══════════════════════════════
+   LAYOUT HELPERS
+═══════════════════════════════ */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.col2{grid-column:span 2}
+.mt-16{margin-top:16px}
+.mb-16{margin-bottom:16px}
+.mt-22{margin-top:22px}
+.flex-gap{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.empty-state{text-align:center;padding:44px 20px;color:var(--text-3)}
+.empty-state .mi{font-size:36px;display:block;margin-bottom:10px;color:var(--border-dk)}
+.empty-state p{font-size:13px}
+
+/* CONFIRM BOX */
+.confirm-box{
+  background:var(--white);border-radius:var(--radius-lg);width:360px;
+  box-shadow:var(--shadow);padding:28px;text-align:center;
+}
+.confirm-box h3{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.confirm-box p{font-size:13px;color:var(--text-2);margin-bottom:22px}
+.confirm-box .btn-row{display:flex;gap:10px;justify-content:center}
+
+/* ═══════════════════════════════
+   RESPONSIVE
+═══════════════════════════════ */
+@media(max-width:1200px){
+  .stat-grid{grid-template-columns:repeat(3,1fr)}
+  .login-left{padding:40px 40px}
+}
+@media(max-width:1024px){
+  .three-col{grid-template-columns:1fr 1fr}
+  .login-hero h1{font-size:28px}
+}
+@media(max-width:900px){
+  :root{--sidebar-w:220px}
+  .topbar{padding-left:calc(var(--sidebar-w) + 16px);padding-right:16px}
+  .page-body{padding:18px 20px}
+  .page-header{padding:14px 20px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .two-col{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .form-row-3{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .login-left{display:none}
+  .login-right{width:100%;padding:40px 32px;border:none}
+  :root{--sidebar-w:0px;--header-h:56px}
+  .sidebar{
+    position:fixed;left:-260px;top:0;height:100vh;z-index:200;
+    width:260px;transition:left .25s ease;box-shadow:var(--shadow);
+  }
+  .sidebar.mobile-open{left:0}
+  .topbar{padding-left:16px}
+  .topbar-role-switch{display:none}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .two-col{grid-template-columns:1fr}
+  .form-row,.form-row-3{grid-template-columns:1fr}
+  .page-header{flex-wrap:wrap;gap:10px}
+  .mobile-menu-btn{display:flex!important}
+  .three-col{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .stat-grid{grid-template-columns:1fr}
+  .login-right{padding:30px 20px}
+}
+.mobile-menu-btn{display:none;align-items:center;justify-content:center;padding:7px;border-radius:var(--radius);cursor:pointer}
+.mobile-menu-btn:hover{background:var(--bg-2)}
+.mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:199}
+.mobile-overlay.on{display:block}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ LOGIN ════════════════════ -->
+<div id="loginPage">
+  <div class="login-left">
+    <div class="login-brand">
+      <div class="login-logo">MSH</div>
+      <div class="login-brand-text">
+        <strong>Management Sciences for Health</strong>
+        <span>USAID-IREME Project · Rwanda</span>
+      </div>
+    </div>
+    <div class="login-hero">
+      <h1>Fleet Management &amp;<br><em>GPS Tracking System</em></h1>
+      <p>A centralised platform for managing organisational vehicles, travel requests, driver assignments, and real-time fleet visibility across Rwanda.</p>
+    </div>
+    <div class="login-features">
+      <div class="login-feature"><span class="mi mi-sm">gps_fixed</span><span>Real-time vehicle GPS tracking</span></div>
+      <div class="login-feature"><span class="mi mi-sm">assignment</span><span>Travel request workflow</span></div>
+      <div class="login-feature"><span class="mi mi-sm">local_gas_station</span><span>Fuel &amp; maintenance records</span></div>
+      <div class="login-feature"><span class="mi mi-sm">bar_chart</span><span>Fleet reports &amp; analytics</span></div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-form-head">
+      <h2>Sign In</h2>
+      <p>Use your organisational credentials to continue</p>
+    </div>
+    <div class="demo-panel">
+      <div class="dp-label">Demo accounts — click to fill</div>
+      <div class="demo-row" onclick="fillLogin('admin@msh.org','password')">
+        <span class="dr-badge">Admin</span>
+        <span class="dr-email">admin@msh.org</span>
+        <span class="dr-use"><span class="mi mi-sm">arrow_forward</span> Use</span>
+      </div>
+      <div class="demo-row" onclick="fillLogin('manager@msh.org','password')">
+        <span class="dr-badge b-mgr">Manager</span>
+        <span class="dr-email">manager@msh.org</span>
+        <span class="dr-use"><span class="mi mi-sm">arrow_forward</span> Use</span>
+      </div>
+      <div class="demo-row" onclick="fillLogin('john@msh.org','password')">
+        <span class="dr-badge b-emp">Employee</span>
+        <span class="dr-email">john@msh.org</span>
+        <span class="dr-use"><span class="mi mi-sm">arrow_forward</span> Use</span>
+      </div>
+      <div class="demo-row" onclick="fillLogin('driver1@msh.org','password')">
+        <span class="dr-badge b-drv">Driver</span>
+        <span class="dr-email">driver1@msh.org</span>
+        <span class="dr-use"><span class="mi mi-sm">arrow_forward</span> Use</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="loginEmail" placeholder="yourname@msh.org" autocomplete="username">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password">
+      <div class="field-error" id="loginError">Invalid email or password. Please try again.</div>
+    </div>
+    <button class="btn btn-navy btn-full" onclick="doLogin()" style="margin-top:6px">
+      <span class="mi mi-sm">login</span> Sign In
+    </button>
+    <div style="margin-top:20px;font-size:11px;color:var(--text-3);text-align:center">
+      FMS v2.0 &nbsp;·&nbsp; MSH Rwanda &nbsp;·&nbsp; USAID-IREME &nbsp;·&nbsp; Kigali
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ MAIN APP ════════════════════ -->
+<div id="mainApp">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="mobile-menu-btn" onclick="toggleMobileSidebar()" id="mobileMenuBtn">
+        <span class="mi">menu</span>
+      </button>
+      <div class="topbar-title" id="topBarTitle">Dashboard</div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-role-switch" id="roleSwitchRow">
+        <button class="rsw-btn on" onclick="demoRole('admin',this)">Admin</button>
+        <button class="rsw-btn" onclick="demoRole('manager',this)">Manager</button>
+        <button class="rsw-btn" onclick="demoRole('employee',this)">Employee</button>
+        <button class="rsw-btn" onclick="demoRole('driver',this)">Driver</button>
+      </div>
+      <button class="btn-ghost btn-icon notif-btn" onclick="toast('No new notifications','info')">
+        <span class="mi">notifications</span>
+        <div class="notif-dot" id="notifDot"></div>
+      </button>
+      <div class="user-chip">
+        <div class="u-avatar" id="topAvatar">AA</div>
+        <div class="u-meta">
+          <strong id="topName">Dr. Anita Asiimwe</strong>
+          <span id="topRole">Administrator</span>
+        </div>
+      </div>
+      <button class="btn-ghost btn-icon" onclick="doLogout()" title="Sign Out">
+        <span class="mi">logout</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- App Body -->
+  <div class="app-body">
+    <!-- Mobile overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-org">
+        <div class="sidebar-logo">MSH</div>
+        <div class="sidebar-org-name">
+          MSH Rwanda
+          <small>USAID-IREME · FMS</small>
+        </div>
+      </div>
+
+      <!-- Admin/Manager Nav -->
+      <div id="navAdmin">
+        <div class="nav-section">
+          <div class="nav-label">Overview</div>
+          <div class="nav-item on" onclick="nav('dashboard',this)"><span class="mi">dashboard</span> Dashboard</div>
+          <div class="nav-item" onclick="nav('liveTracking',this)"><span class="mi">gps_fixed</span> Live Tracking <span class="nav-badge" id="activeCount">3</span></div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Requests</div>
+          <div class="nav-item" onclick="nav('requests',this)"><span class="mi">assignment</span> All Requests <span class="nav-badge" id="pendingBadge">3</span></div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Fleet</div>
+          <div class="nav-item" onclick="nav('vehicles',this)"><span class="mi">directions_car</span> Vehicles</div>
+          <div class="nav-item" onclick="nav('drivers',this)"><span class="mi">badge</span> Drivers</div>
+          <div class="nav-item" onclick="nav('users',this)"><span class="mi">group</span> Users</div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Operations</div>
+          <div class="nav-item" onclick="nav('fuel',this)"><span class="mi">local_gas_station</span> Fuel &amp; Maintenance</div>
+          <div class="nav-item" onclick="nav('reports',this)"><span class="mi">bar_chart</span> Reports</div>
+        </div>
+      </div>
+
+      <!-- Employee Nav -->
+      <div id="navEmployee" style="display:none">
+        <div class="nav-section">
+          <div class="nav-label">My Workspace</div>
+          <div class="nav-item on" onclick="nav('empDashboard',this)"><span class="mi">home</span> Dashboard</div>
+          <div class="nav-item" onclick="nav('newRequest',this)"><span class="mi">add_circle_outline</span> New Request</div>
+          <div class="nav-item" onclick="nav('myRequests',this)"><span class="mi">list_alt</span> My Requests</div>
+        </div>
+      </div>
+
+      <!-- Driver Nav -->
+      <div id="navDriver" style="display:none">
+        <div class="nav-section">
+          <div class="nav-label">My Trips</div>
+          <div class="nav-item on" onclick="nav('driverDashboard',this)"><span class="mi">home</span> Dashboard</div>
+          <div class="nav-item" onclick="nav('myTrips',this)"><span class="mi">route</span> Assigned Trips</div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        FMS v2.0 &mdash; MSH Rwanda<br>USAID-IREME &middot; Kigali, Rwanda
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- ADMIN DASHBOARD -->
+      <div class="page on" id="page-dashboard">
+        <div class="page-header">
+          <div class="ph-left"><h1>Dashboard</h1><p id="dashDate"></p></div>
+          <div class="ph-right">
+            <button class="btn btn-navy" onclick="openModal('modalNewRequest')"><span class="mi mi-sm">add</span> New Request</button>
+          </div>
+        </div>
+        <div class="page-body">
+          <div class="stat-grid">
+            <div class="stat-card s-navy"><div class="sc-label">Total Vehicles</div><div class="sc-value" id="ds-vehicles">8</div><div class="sc-sub">in fleet registry</div></div>
+            <div class="stat-card s-gold"><div class="sc-label">Active Drivers</div><div class="sc-value" id="ds-drivers">7</div><div class="sc-sub">registered &amp; active</div></div>
+            <div class="stat-card"><div class="sc-label">Employees</div><div class="sc-value" id="ds-employees">12</div><div class="sc-sub">with system access</div></div>
+            <div class="stat-card s-red"><div class="sc-label">Pending Requests</div><div class="sc-value" id="ds-pending">3</div><div class="sc-sub">awaiting decision</div></div>
+            <div class="stat-card s-green"><div class="sc-label">Active Trips</div><div class="sc-value" id="ds-active">3</div><div class="sc-sub">vehicles on route</div></div>
+          </div>
+          <div class="map-wrap mb-16">
+            <div class="map-head">
+              <h3>Live Fleet Map — Rwanda</h3>
+              <div class="live-text"><div class="live-dot"></div> LIVE &mdash; updates every 5s</div>
+            </div>
+            <div class="map-canvas" id="dashMap"></div>
+            <div class="map-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Moving</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Idle</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div> Stopped</div>
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="panel">
+              <div class="panel-header">Recent Requests <button class="btn-ghost btn-sm" onclick="nav('requests',null)">View All</button></div>
+              <table><thead><tr><th>ID</th><th>Employee</th><th>Destination</th><th>Status</th></tr></thead>
+              <tbody id="dashRecentReqs"></tbody></table>
+            </div>
+            <div class="panel">
+              <div class="panel-header">Fleet Status</div>
+              <div class="panel-body" id="dashFleetStatus"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE TRACKING -->
+      <div class="page" id="page-liveTracking">
+        <div class="page-header">
+          <div class="ph-left"><h1>Live Vehicle Tracking</h1><p>Real-time GPS positions of all vehicles</p></div>
+          <div class="live-text" style="font-size:12px"><div class="live-dot"></div> GPS Connected</div>
+        </div>
+        <div class="page-body">
+          <div class="map-wrap mb-16">
+            <div class="map-head"><h3>Rwanda — Fleet GPS Overview</h3><span style="font-size:11px;color:var(--text-3)">Refreshes every 5 seconds</span></div>
+            <div class="map-canvas" id="trackMap" style="height:360px"></div>
+            <div class="map-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> Moving</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Idle</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div> Stopped</div>
+            </div>
+          </div>
+          <div class="table-card">
+            <div class="table-toolbar"><h3>Vehicle Location Log</h3></div>
+            <table><thead><tr><th>Plate</th><th>Driver</th><th>Status</th><th>Location</th><th>Speed</th><th>Coordinates</th><th>Last Update</th></tr></thead>
+            <tbody id="trackTable"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALL REQUESTS -->
+      <div class="page" id="page-requests">
+        <div class="page-header"><div class="ph-left"><h1>Request Management</h1><p>Review, approve or reject all travel requests</p></div></div>
+        <div class="page-body">
+          <div class="tabs-bar">
+            <button class="tab-btn on" onclick="switchTab('reqTabs','pending',this)">Pending <span id="pendingCount" style="background:var(--yellow-bg);color:var(--yellow);padding:1px 7px;border-radius:10px;font-size:10px;margin-left:4px;border:1px solid var(--yellow-bd)">3</span></button>
+            <button class="tab-btn" onclick="switchTab('reqTabs','approved',this)">Approved</button>
+            <button class="tab-btn" onclick="switchTab('reqTabs','rejected',this)">Rejected</button>
+            <button class="tab-btn" onclick="switchTab('reqTabs','all',this)">All</button>
+          </div>
+          <div id="reqTabs">
+            <div class="tab-pane on" data-tab="pending">
+              <div class="table-card">
+                <div class="table-toolbar"><h3>Pending Requests</h3>
+                  <div class="search-input"><span class="mi">search</span><input type="text" placeholder="Search…" oninput="filterTbl('pendingTbl',this.value)"></div>
+                </div>
+                <table><thead><tr><th>Ref</th><th>Employee</th><th>Destination</th><th>Purpose</th><th>Date</th><th>Submitted</th><th>Actions</th></tr></thead>
+                <tbody id="pendingTbl"></tbody></table>
+              </div>
+            </div>
+            <div class="tab-pane" data-tab="approved">
+              <div class="table-card"><table><thead><tr><th>Ref</th><th>Employee</th><th>Destination</th><th>Vehicle</th><th>Driver</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="approvedTbl"></tbody></table></div>
+            </div>
+            <div class="tab-pane" data-tab="rejected">
+              <div class="table-card"><table><thead><tr><th>Ref</th><th>Employee</th><th>Destination</th><th>Reason</th><th>Date</th></tr></thead>
+              <tbody id="rejectedTbl"></tbody></table></div>
+            </div>
+            <div class="tab-pane" data-tab="all">
+              <div class="table-card">
+                <div class="table-toolbar"><h3>All Requests</h3>
+                  <select class="filter-sel" onchange="filterReqAll(this.value)"><option value="">All Statuses</option><option>pending</option><option>approved</option><option>rejected</option><option>completed</option></select>
+                  <div class="search-input"><span class="mi">search</span><input type="text" placeholder="Search…" oninput="filterTbl('allReqTbl',this.value)"></div>
+                </div>
+                <table><thead><tr><th>Ref</th><th>Employee</th><th>Destination</th><th>Purpose</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="allReqTbl"></tbody></table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VEHICLES -->
+      <div class="page" id="page-vehicles">
+        <div class="page-header">
+          <div class="ph-left"><h1>Vehicle Registry</h1><p>Fleet inventory and assignment</p></div>
+          <div class="ph-right"><button class="btn btn-navy" onclick="openModal('modalVehicle')"><span class="mi mi-sm">add</span> Register Vehicle</button></div>
+        </div>
+        <div class="page-body">
+          <div class="table-card">
+            <div class="table-toolbar"><h3>All Vehicles</h3>
+              <div class="search-input"><span class="mi">search</span><input type="text" placeholder="Search plate, model…" oninput="filterTbl('vehicleTbl',this.value)"></div>
+              <select class="filter-sel" onchange="filterVehicles(this.value)"><option value="">All Status</option><option>available</option><option>in-use</option><option>maintenance</option></select>
+            </div>
+            <table><thead><tr><th>Plate</th><th>Make / Model</th><th>Year</th><th>Type</th><th>GPS</th><th>Status</th><th>Driver</th><th>Mileage</th><th>Next Service</th><th>Actions</th></tr></thead>
+            <tbody id="vehicleTbl"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DRIVERS -->
+      <div class="page" id="page-drivers">
+        <div class="page-header">
+          <div class="ph-left"><h1>Driver Management</h1><p>Register and manage fleet drivers</p></div>
+          <div class="ph-right"><button class="btn btn-navy" onclick="openModal('modalDriver')"><span class="mi mi-sm">add</span> Add Driver</button></div>
+        </div>
+        <div class="page-body">
+          <div class="table-card">
+            <div class="table-toolbar"><h3>All Drivers</h3>
+              <div class="search-input"><span class="mi">search</span><input type="text" placeholder="Search driver…" oninput="filterTbl('driverTbl',this.value)"></div>
+            </div>
+            <table><thead><tr><th>ID</th><th>Full Name</th><th>Phone</th><th>License</th><th>Category</th><th>Expiry</th><th>Vehicle</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="driverTbl"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="page" id="page-users">
+        <div class="page-header">
+          <div class="ph-left"><h1>User Management</h1><p>Employees and system users</p></div>
+          <div class="ph-right"><button class="btn btn-navy" onclick="openModal('modalUser')"><span class="mi mi-sm">person_add</span> Add User</button></div>
+        </div>
+        <div class="page-body">
+          <div class="table-card">
+            <div class="table-toolbar"><h3>All Users</h3>
+              <div class="search-input"><span class="mi">search</span><input type="text" placeholder="Search name, email…" oninput="filterTbl('userTbl',this.value)"></div>
+              <select class="filter-sel" onchange="filterUsers(this.value)"><option value="">All Roles</option><option>admin</option><option>manager</option><option>employee</option><option>driver</option></select>
+            </div>
+            <table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th><th>Role</th><th>Requests</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="userTbl"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- FUEL & MAINTENANCE -->
+      <div class="page" id="page-fuel">
+        <div class="page-header">
+          <div class="ph-left"><h1>Fuel &amp; Maintenance</h1><p>Track operational costs per vehicle</p></div>
+          <div class="ph-right">
+            <button class="btn btn-navy" onclick="openModal('modalFuel')"><span class="mi mi-sm">local_gas_station</span> Log Fuel</button>
+            <button class="btn btn-outline" onclick="openModal('modalMaint')"><span class="mi mi-sm">build</span> Log Service</button>
+          </div>
+        </div>
+        <div class="page-body">
+          <div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
+            <div class="stat-card s-blue"><div class="sc-label">Fuel This Month</div><div class="sc-value">1,240 L</div><div class="sc-sub">all vehicles</div></div>
+            <div class="stat-card s-gold"><div class="sc-label">Fuel Cost (RWF)</div><div class="sc-value">1.86M</div><div class="sc-sub">avg RWF 1,500/L</div></div>
+            <div class="stat-card s-green"><div class="sc-label">Maintenance Cost</div><div class="sc-value">540K</div><div class="sc-sub">this quarter</div></div>
+            <div class="stat-card s-red"><div class="sc-label">Overdue Services</div><div class="sc-value">2</div><div class="sc-sub">need attention</div></div>
+          </div>
+          <div class="tabs-bar">
+            <button class="tab-btn on" onclick="switchTab('fuelTabs','fuelLog',this)">Fuel Log</button>
+            <button class="tab-btn" onclick="switchTab('fuelTabs','maintLog',this)">Maintenance / Service</button>
+          </div>
+          <div id="fuelTabs">
+            <div class="tab-pane on" data-tab="fuelLog">
+              <div class="table-card"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Litres</th><th>Cost (RWF)</th><th>Odometer</th><th>Station</th><th>Recorded By</th></tr></thead>
+              <tbody id="fuelTbl"></tbody></table></div>
+            </div>
+            <div class="tab-pane" data-tab="maintLog">
+              <div class="table-card"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Service Type</th><th>Cost (RWF)</th><th>Garage</th><th>Next Due</th><th>Notes</th></tr></thead>
+              <tbody id="maintTbl"></tbody></table></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="page" id="page-reports">
+        <div class="page-header">
+          <div class="ph-left"><h1>Reports &amp; Analytics</h1><p>Operational performance and usage statistics</p></div>
+          <div class="ph-right">
+            <select class="filter-sel"><option>This Month</option><option>Last Month</option><option>This Quarter</option></select>
+            <button class="btn btn-outline" onclick="toast('Report exported as PDF','success')"><span class="mi mi-sm">download</span> Export PDF</button>
+          </div>
+        </div>
+        <div class="page-body">
+          <div class="three-col mb-16">
+            <div class="panel"><div class="panel-header">Trips by Vehicle</div><div class="panel-body" id="rptTrips"></div></div>
+            <div class="panel"><div class="panel-header">Distance by Route (km)</div><div class="panel-body" id="rptDist"></div></div>
+            <div class="panel"><div class="panel-header">Fuel Consumption (L)</div><div class="panel-body" id="rptFuel"></div></div>
+          </div>
+          <div class="table-card">
+            <div class="table-toolbar"><h3>Complete Trip History</h3>
+              <div class="search-input"><span class="mi">search</span><input type="text" placeholder="Filter trips…" oninput="filterTbl('tripHistTbl',this.value)"></div>
+            </div>
+            <table><thead><tr><th>Ref</th><th>Employee</th><th>Driver</th><th>Vehicle</th><th>Route</th><th>Departure</th><th>Return</th><th>Distance</th><th>Fuel Used</th><th>Status</th></tr></thead>
+            <tbody id="tripHistTbl"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPLOYEE DASHBOARD -->
+      <div class="page" id="page-empDashboard">
+        <div class="page-header">
+          <div class="ph-left"><h1>My Dashboard</h1><p id="empDashGreet"></p></div>
+          <div class="ph-right"><button class="btn btn-navy" onclick="nav('newRequest',null)"><span class="mi mi-sm">add</span> New Request</button></div>
+        </div>
+        <div class="page-body">
+          <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="stat-card s-blue"><div class="sc-label">Total Requests</div><div class="sc-value" id="empTotal">4</div><div class="sc-sub">submitted by me</div></div>
+            <div class="stat-card s-gold"><div class="sc-label">Pending</div><div class="sc-value" id="empPending">1</div><div class="sc-sub">awaiting approval</div></div>
+            <div class="stat-card s-green"><div class="sc-label">Approved</div><div class="sc-value" id="empApproved">2</div><div class="sc-sub">trips confirmed</div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">My Recent Requests</div>
+            <table><thead><tr><th>Ref</th><th>Destination</th><th>Purpose</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="empRecentReqs"></tbody></table>
+          </div>
+          <div class="alert alert-info mt-16"><span class="mi">info</span> Requests must be submitted at least 24 hours before the trip date. Contact your manager for urgent requirements.</div>
+        </div>
+      </div>
+
+      <!-- NEW REQUEST -->
+      <div class="page" id="page-newRequest">
+        <div class="page-header"><div class="ph-left"><h1>New Travel Request</h1><p>Submit a vehicle request for official travel</p></div></div>
+        <div class="page-body">
+          <div style="max-width:600px">
+            <div class="panel">
+              <div class="panel-header">Travel Request Form</div>
+              <div class="panel-body">
+                <div class="form-row">
+                  <div class="field"><label>Origin / Departure</label><input type="text" id="nrOrigin" value="Kigali — MSH HQ, Kacyiru"></div>
+                  <div class="field"><label>Destination</label><input type="text" id="nrDest" placeholder="e.g. Rusizi District"></div>
+                </div>
+                <div class="field"><label>Purpose of Travel</label><textarea id="nrPurpose" placeholder="Describe the official purpose of this trip…"></textarea></div>
+                <div class="form-row">
+                  <div class="field"><label>Departure Date</label><input type="date" id="nrDate"></div>
+                  <div class="field"><label>Departure Time</label><input type="time" id="nrTime" value="08:00"></div>
+                </div>
+                <div class="form-row">
+                  <div class="field"><label>Expected Return Date</label><input type="date" id="nrReturn"></div>
+                  <div class="field"><label>No. of Passengers</label><input type="number" id="nrPax" value="1" min="1" max="10"></div>
+                </div>
+                <div class="field"><label>Additional Notes</label><textarea id="nrNotes" rows="2" placeholder="Special requirements or instructions…"></textarea></div>
+                <div class="alert alert-warn mb-16"><span class="mi">warning</span> Submit at least 24 hours in advance. Requests received after 4:00 PM may be processed the following business day.</div>
+                <div class="flex-gap">
+                  <button class="btn btn-navy" onclick="submitRequest()"><span class="mi mi-sm">send</span> Submit Request</button>
+                  <button class="btn btn-outline" onclick="nav('myRequests',null)">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MY REQUESTS -->
+      <div class="page" id="page-myRequests">
+        <div class="page-header">
+          <div class="ph-left"><h1>My Travel Requests</h1><p>Track all your submitted vehicle requests</p></div>
+          <div class="ph-right"><button class="btn btn-navy" onclick="nav('newRequest',null)"><span class="mi mi-sm">add</span> New Request</button></div>
+        </div>
+        <div class="page-body">
+          <div class="table-card">
+            <div class="table-toolbar"><h3>All My Requests</h3>
+              <div class="search-input"><span class="mi">search</span><input type="text" placeholder="Search…" oninput="filterTbl('myReqTbl',this.value)"></div>
+            </div>
+            <table><thead><tr><th>Ref</th><th>Destination</th><th>Purpose</th><th>Date</th><th>Vehicle</th><th>Driver</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="myReqTbl"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DRIVER DASHBOARD -->
+      <div class="page" id="page-driverDashboard">
+        <div class="page-header"><div class="ph-left"><h1>Driver Dashboard</h1><p id="driverGreet"></p></div></div>
+        <div class="page-body">
+          <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="stat-card s-blue"><div class="sc-label">Total Trips</div><div class="sc-value">24</div><div class="sc-sub">completed this month</div></div>
+            <div class="stat-card s-gold"><div class="sc-label">Distance (km)</div><div class="sc-value">3,824</div><div class="sc-sub">driven this month</div></div>
+            <div class="stat-card s-green"><div class="sc-label">Upcoming Trips</div><div class="sc-value" id="upcomingCount">2</div><div class="sc-sub">scheduled</div></div>
+          </div>
+          <div class="section-div">Current &amp; Upcoming Assignments</div>
+          <div id="driverTripCards"></div>
+          <div class="two-col mt-16">
+            <div class="panel"><div class="panel-header">My Vehicle</div><div class="panel-body" id="driverVehicleInfo"></div></div>
+            <div class="panel">
+              <div class="panel-header">Reminders</div>
+              <div class="panel-body">
+                <div class="alert alert-warn mb-16"><span class="mi">warning</span> Always complete the pre-departure vehicle check before starting a trip.</div>
+                <div class="alert alert-info"><span class="mi">info</span> Report any vehicle damage or issues immediately to the Fleet Manager.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MY TRIPS (DRIVER) -->
+      <div class="page" id="page-myTrips">
+        <div class="page-header"><div class="ph-left"><h1>My Assigned Trips</h1><p>All trips assigned to you</p></div></div>
+        <div class="page-body">
+          <div class="table-card">
+            <div class="table-toolbar"><h3>Trip Assignments</h3>
+              <select class="filter-sel"><option value="">All Statuses</option><option>upcoming</option><option>in-progress</option><option>completed</option></select>
+            </div>
+            <table><thead><tr><th>Ref</th><th>Employee</th><th>Route</th><th>Date</th><th>Vehicle</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="myTripsTbl"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ════════════════════ MODALS ════════════════════ -->
+
+<!-- APPROVE MODAL -->
+<div class="overlay" id="modalApprove">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h2>Review &amp; Approve — <span id="approveRef"></span></h2><button class="modal-close" onclick="closeModal('modalApprove')">&#215;</button></div>
+    <div class="modal-body">
+      <div id="approveInfo" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:18px"></div>
+      <div class="section-div">Assign Resources</div>
+      <div class="form-row">
+        <div class="field"><label>Assign Vehicle</label><select id="approveVehicle"><option value="">— Select Available Vehicle —</option></select></div>
+        <div class="field"><label>Assign Driver</label><select id="approveDriver"><option value="">— Select Available Driver —</option></select></div>
+      </div>
+      <div class="field"><label>Manager Notes (optional)</label><textarea id="approveNotes" rows="2" placeholder="Instructions for driver or employee…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="doReject()"><span class="mi mi-sm">close</span> Reject</button>
+      <span style="flex:1"></span>
+      <button class="btn btn-outline" onclick="closeModal('modalApprove')">Cancel</button>
+      <button class="btn btn-success" onclick="doApprove()"><span class="mi mi-sm">check</span> Approve &amp; Assign</button>
+    </div>
+  </div>
+</div>
+
+<!-- REJECT MODAL -->
+<div class="overlay" id="modalReject">
+  <div class="modal">
+    <div class="modal-header"><h2>Reject Request</h2><button class="modal-close" onclick="closeModal('modalReject')">&#215;</button></div>
+    <div class="modal-body">
+      <div class="alert alert-danger mb-16"><span class="mi">warning</span> Rejected requests will notify the employee. This action is recorded.</div>
+      <div class="field"><label>Reason for Rejection</label>
+        <select id="rejectReason">
+          <option>No available vehicle on requested date</option>
+          <option>No available driver on requested date</option>
+          <option>Request not sufficiently justified</option>
+          <option>Duplicate request submitted</option>
+          <option>Request outside working hours</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Additional Comments</label><textarea id="rejectComment" rows="3" placeholder="Optional: provide context to the employee…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalReject')">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmReject()"><span class="mi mi-sm">close</span> Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW REQUEST MODAL (admin) -->
+<div class="overlay" id="modalNewRequest">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h2>New Travel Request</h2><button class="modal-close" onclick="closeModal('modalNewRequest')">&#215;</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Requesting Employee</label><select id="mnrEmployee"></select></div>
+      <div class="form-row">
+        <div class="field"><label>Origin</label><input type="text" id="mnrOrigin" value="Kigali — MSH HQ"></div>
+        <div class="field"><label>Destination</label><input type="text" id="mnrDest" placeholder="e.g. Rusizi District"></div>
+      </div>
+      <div class="field"><label>Purpose</label><textarea id="mnrPurpose" rows="2" placeholder="Official purpose of travel…"></textarea></div>
+      <div class="form-row">
+        <div class="field"><label>Departure Date</label><input type="date" id="mnrDate"></div>
+        <div class="field"><label>Departure Time</label><input type="time" id="mnrTime" value="08:00"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Return Date</label><input type="date" id="mnrReturn"></div>
+        <div class="field"><label>Passengers</label><input type="number" id="mnrPax" value="1" min="1" max="10"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalNewRequest')">Cancel</button>
+      <button class="btn btn-navy" onclick="submitRequestAdmin()"><span class="mi mi-sm">send</span> Submit Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- VEHICLE MODAL -->
+<div class="overlay" id="modalVehicle">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h2 id="vModalTitle">Register New Vehicle</h2><button class="modal-close" onclick="closeModal('modalVehicle')">&#215;</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="field"><label>Plate Number</label><input type="text" id="vPlate" placeholder="e.g. RAB 123 A"></div>
+        <div class="field"><label>Make (Brand)</label><input type="text" id="vMake" placeholder="e.g. Toyota"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Model</label><input type="text" id="vModel" placeholder="e.g. Land Cruiser 200"></div>
+        <div class="field"><label>Year</label><input type="number" id="vYear" placeholder="2023" min="2000" max="2030"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Vehicle Type</label><select id="vType"><option>4WD / SUV</option><option>Sedan</option><option>Pickup / Truck</option><option>Minibus</option><option>Motorcycle</option></select></div>
+        <div class="field"><label>Fuel Type</label><select id="vFuel"><option>Diesel</option><option>Petrol</option><option>Hybrid</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Current Mileage (km)</label><input type="number" id="vMileage" placeholder="45000"></div>
+        <div class="field"><label>Next Service (km)</label><input type="number" id="vNextService" placeholder="50000"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>GPS Tracker ID</label><input type="text" id="vGPS" placeholder="e.g. GPS-RW-009"></div>
+        <div class="field"><label>Assign Driver</label><select id="vDriver"><option value="">— Unassigned —</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalVehicle')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveVehicle()"><span class="mi mi-sm">save</span> Save Vehicle</button>
+    </div>
+  </div>
+</div>
+
+<!-- DRIVER MODAL -->
+<div class="overlay" id="modalDriver">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h2>Add New Driver</h2><button class="modal-close" onclick="closeModal('modalDriver')">&#215;</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="field"><label>Full Name</label><input type="text" id="dName" placeholder="First and last name"></div>
+        <div class="field"><label>Phone Number</label><input type="text" id="dPhone" placeholder="+250 7XX XXX XXX"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>National ID</label><input type="text" id="dNID" placeholder="16-digit national ID"></div>
+        <div class="field"><label>License Number</label><input type="text" id="dLicense" placeholder="RW-DL-XXXXX"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>License Category</label><select id="dLicCat"><option>B — Light vehicles</option><option>C — Heavy vehicles</option><option>D — Passenger transport</option><option>E — Articulated vehicles</option></select></div>
+        <div class="field"><label>License Expiry</label><input type="date" id="dExpiry"></div>
+      </div>
+      <div class="field"><label>Assign to Vehicle</label><select id="dVehicle"><option value="">— No vehicle assigned —</option></select></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalDriver')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveDriver()"><span class="mi mi-sm">save</span> Add Driver</button>
+    </div>
+  </div>
+</div>
+
+<!-- USER MODAL -->
+<div class="overlay" id="modalUser">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h2 id="uModalTitle">Add User / Employee</h2><button class="modal-close" onclick="closeModal('modalUser')">&#215;</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="field"><label>Full Name</label><input type="text" id="uName" placeholder="Full name"></div>
+        <div class="field"><label>Email Address</label><input type="email" id="uEmail" placeholder="name@msh.org"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Department</label><select id="uDept"><option>Programme</option><option>Finance</option><option>M&amp;E</option><option>HR</option><option>Logistics</option><option>Administration</option><option>Management</option></select></div>
+        <div class="field"><label>Position / Title</label><input type="text" id="uPos" placeholder="e.g. Field Officer"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Phone</label><input type="text" id="uPhone" placeholder="+250 7XX XXX XXX"></div>
+        <div class="field"><label>System Role</label><select id="uRole"><option value="employee">Employee</option><option value="manager">Manager</option><option value="admin">Administrator</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Temporary Password</label><input type="password" id="uPassword" placeholder="Min 8 characters"></div>
+        <div class="field"><label>Confirm Password</label><input type="password" id="uPassword2" placeholder="Repeat password"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalUser')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveUser()"><span class="mi mi-sm">save</span> Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- FUEL MODAL -->
+<div class="overlay" id="modalFuel">
+  <div class="modal">
+    <div class="modal-header"><h2>Log Fuel Consumption</h2><button class="modal-close" onclick="closeModal('modalFuel')">&#215;</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="field"><label>Vehicle</label><select id="fVehicle"></select></div>
+        <div class="field"><label>Driver</label><select id="fDriver"></select></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Date</label><input type="date" id="fDate"></div>
+        <div class="field"><label>Station / Location</label><input type="text" id="fStation" placeholder="e.g. Total — Nyabugogo"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Litres</label><input type="number" id="fLitres" placeholder="50" min="1"></div>
+        <div class="field"><label>Total Cost (RWF)</label><input type="number" id="fCost" placeholder="75000"></div>
+      </div>
+      <div class="field"><label>Odometer Reading (km)</label><input type="number" id="fOdometer" placeholder="47500"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalFuel')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveFuel()"><span class="mi mi-sm">save</span> Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAINT MODAL -->
+<div class="overlay" id="modalMaint">
+  <div class="modal">
+    <div class="modal-header"><h2>Log Maintenance / Service</h2><button class="modal-close" onclick="closeModal('modalMaint')">&#215;</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="field"><label>Vehicle</label><select id="mVehicle"></select></div>
+        <div class="field"><label>Date of Service</label><input type="date" id="mDate"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Service Type</label><select id="mType"><option>Oil Change</option><option>Tyre Replacement</option><option>Brake Service</option><option>Full Service</option><option>Electrical Repair</option><option>Bodywork</option><option>Battery Replacement</option><option>Other</option></select></div>
+        <div class="field"><label>Cost (RWF)</label><input type="number" id="mCost" placeholder="120000"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Garage / Workshop</label><input type="text" id="mGarage" placeholder="e.g. Toyota Rwanda Service"></div>
+        <div class="field"><label>Next Service Due</label><input type="date" id="mNextDue"></div>
+      </div>
+      <div class="field"><label>Notes</label><textarea id="mNotes" rows="2" placeholder="Details of work performed…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalMaint')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveMaint()"><span class="mi mi-sm">save</span> Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div class="overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <span class="mi" style="font-size:40px;color:var(--red);margin-bottom:12px;display:block">warning</span>
+    <h3 id="confirmTitle">Confirm Action</h3>
+    <p id="confirmMsg">Are you sure you want to proceed?</p>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="closeModal('confirmOverlay')">Cancel</button>
+      <button class="btn btn-danger" id="confirmOk">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* ═══════ DATA ═══════ */
+const USERS=[
+  {id:'U-001',name:'Dr. Anita Asiimwe',email:'admin@msh.org',password:'password',role:'admin',dept:'Management',pos:'Chief of Party',phone:'+250 788 001 001',active:true,requests:0},
+  {id:'U-002',name:'Alice Ingabire',email:'manager@msh.org',password:'password',role:'manager',dept:'Programme',pos:'Programme Manager',phone:'+250 788 001 002',active:true,requests:3},
+  {id:'U-003',name:'John Mutabazi',email:'john@msh.org',password:'password',role:'employee',dept:'Programme',pos:'Field Officer',phone:'+250 788 001 003',active:true,requests:3},
+  {id:'U-004',name:'Grace Uwimana',email:'grace@msh.org',password:'password',role:'employee',dept:'M&E',pos:'M&E Specialist',phone:'+250 788 001 004',active:true,requests:2},
+  {id:'U-005',name:'Eric Habimana',email:'eric@msh.org',password:'password',role:'employee',dept:'Finance',pos:'Finance Officer',phone:'+250 788 001 005',active:true,requests:1},
+  {id:'U-006',name:'Marie Uwase',email:'marie@msh.org',password:'password',role:'employee',dept:'HR',pos:'HR Officer',phone:'+250 788 001 006',active:true,requests:1},
+  {id:'U-007',name:'Jean-Pierre Nkurunziza',email:'driver1@msh.org',password:'password',role:'driver',dept:'Logistics',pos:'Vehicle Driver',phone:'+250 788 002 001',active:true,requests:0},
+  {id:'U-008',name:'Samuel Hakizimana',email:'driver2@msh.org',password:'password',role:'driver',dept:'Logistics',pos:'Vehicle Driver',phone:'+250 788 002 002',active:true,requests:0},
+  {id:'U-009',name:'Emmanuel Ndagijimana',email:'driver3@msh.org',password:'password',role:'driver',dept:'Logistics',pos:'Vehicle Driver',phone:'+250 788 002 003',active:true,requests:0},
+  {id:'U-010',name:'Patrick Niyonzima',email:'driver4@msh.org',password:'password',role:'driver',dept:'Logistics',pos:'Vehicle Driver',phone:'+250 788 002 004',active:true,requests:0},
+  {id:'U-011',name:'Théophile Nshimiyimana',email:'driver5@msh.org',password:'password',role:'driver',dept:'Logistics',pos:'Vehicle Driver',phone:'+250 788 002 005',active:true,requests:0},
+  {id:'U-012',name:'Damascene Uwimana',email:'driver6@msh.org',password:'password',role:'driver',dept:'Logistics',pos:'Vehicle Driver',phone:'+250 788 002 006',active:true,requests:0},
+  {id:'U-013',name:'Sylvestre Nzabonimpa',email:'driver7@msh.org',password:'password',role:'driver',dept:'Logistics',pos:'Vehicle Driver',phone:'+250 788 002 007',active:true,requests:0},
+];
+const VEHICLES=[
+  {id:'V-001',plate:'RAB 123 A',make:'Toyota',model:'Land Cruiser 200',year:2021,type:'4WD / SUV',fuel:'Diesel',status:'in-use',driver:'U-007',mileage:52400,nextService:55000,gps:'GPS-RW-001'},
+  {id:'V-002',plate:'RAC 456 B',make:'Toyota',model:'Hilux D/Cab',year:2020,type:'Pickup / Truck',fuel:'Diesel',status:'available',driver:'U-008',mileage:38700,nextService:40000,gps:'GPS-RW-002'},
+  {id:'V-003',plate:'RAD 789 C',make:'Nissan',model:'Patrol Y62',year:2022,type:'4WD / SUV',fuel:'Petrol',status:'in-use',driver:'U-009',mileage:21300,nextService:25000,gps:'GPS-RW-003'},
+  {id:'V-004',plate:'RAE 012 E',make:'Toyota',model:'Corolla',year:2019,type:'Sedan',fuel:'Petrol',status:'maintenance',driver:'',mileage:74200,nextService:75000,gps:'GPS-RW-004'},
+  {id:'V-005',plate:'RAF 101 F',make:'Toyota',model:'Prado TX',year:2023,type:'4WD / SUV',fuel:'Diesel',status:'available',driver:'U-010',mileage:8900,nextService:10000,gps:'GPS-RW-005'},
+  {id:'V-006',plate:'RAG 202 G',make:'Mitsubishi',model:'L200',year:2020,type:'Pickup / Truck',fuel:'Diesel',status:'available',driver:'U-011',mileage:47600,nextService:50000,gps:'GPS-RW-006'},
+  {id:'V-007',plate:'RAH 303 H',make:'Toyota',model:'HiAce Minibus',year:2018,type:'Minibus',fuel:'Diesel',status:'available',driver:'U-012',mileage:98100,nextService:100000,gps:'GPS-RW-007'},
+  {id:'V-008',plate:'RAI 404 I',make:'Toyota',model:'Land Cruiser 70',year:2022,type:'4WD / SUV',fuel:'Diesel',status:'in-use',driver:'U-013',mileage:15600,nextService:20000,gps:'GPS-RW-008'},
+];
+const REQUESTS=[
+  {id:'REQ-001',empId:'U-003',dest:'Rusizi District',purpose:'Field supervision — ANC programme',date:'2025-01-30',time:'07:30',returnDate:'2025-01-30',status:'approved',vehicle:'V-001',driver:'U-007',pax:2,submitted:'2025-01-28',notes:''},
+  {id:'REQ-002',empId:'U-004',dest:'Musanze District',purpose:'Data collection — health facilities survey',date:'2025-01-31',time:'08:00',returnDate:'2025-02-01',status:'pending',vehicle:'',driver:'',pax:3,submitted:'2025-01-29',notes:''},
+  {id:'REQ-003',empId:'U-005',dest:'Huye District',purpose:'Partner financial review and audit',date:'2025-02-03',time:'06:30',returnDate:'2025-02-03',status:'pending',vehicle:'',driver:'',pax:1,submitted:'2025-01-29',notes:''},
+  {id:'REQ-004',empId:'U-006',dest:'Rwamagana',purpose:'Community meeting — ANC outreach',date:'2025-01-29',time:'09:00',returnDate:'2025-01-29',status:'rejected',vehicle:'',driver:'',pax:4,submitted:'2025-01-27',rejectReason:'No available driver on requested date',notes:''},
+  {id:'REQ-005',empId:'U-003',dest:'Nyamagabe',purpose:'Monitoring visit — facility assessment',date:'2025-01-28',time:'07:00',returnDate:'2025-01-28',status:'completed',vehicle:'V-002',driver:'U-008',pax:2,submitted:'2025-01-26',notes:''},
+  {id:'REQ-006',empId:'U-002',dest:'Rubavu District',purpose:'HR field compliance check',date:'2025-02-05',time:'07:30',returnDate:'2025-02-05',status:'pending',vehicle:'',driver:'',pax:2,submitted:'2025-01-30',notes:''},
+  {id:'REQ-007',empId:'U-003',dest:'Kamonyi District',purpose:'Community health outreach support',date:'2025-01-25',time:'08:00',returnDate:'2025-01-25',status:'completed',vehicle:'V-003',driver:'U-009',pax:3,submitted:'2025-01-23',notes:''},
+  {id:'REQ-008',empId:'U-004',dest:'Kayonza District',purpose:'M&E data verification field trip',date:'2025-01-22',time:'07:00',returnDate:'2025-01-22',status:'completed',vehicle:'V-002',driver:'U-008',pax:2,submitted:'2025-01-20',notes:''},
+];
+const FUEL_LOGS=[
+  {date:'2025-01-28',vehicleId:'V-001',driverId:'U-007',litres:60,cost:90000,odometer:52100,station:'Total Energies — Nyabugogo',by:'Store Officer'},
+  {date:'2025-01-27',vehicleId:'V-002',driverId:'U-008',litres:45,cost:67500,odometer:38400,station:'Rubis — Remera',by:'Store Officer'},
+  {date:'2025-01-26',vehicleId:'V-003',driverId:'U-009',litres:55,cost:82500,odometer:21000,station:'Total — Kicukiro',by:'Store Officer'},
+  {date:'2025-01-25',vehicleId:'V-008',driverId:'U-013',litres:70,cost:105000,odometer:15200,station:'Total — Butamwa',by:'Store Officer'},
+  {date:'2025-01-24',vehicleId:'V-006',driverId:'U-011',litres:80,cost:120000,odometer:47300,station:'Rubis — Gisozi',by:'Store Officer'},
+];
+const MAINT_LOGS=[
+  {date:'2025-01-20',vehicleId:'V-004',type:'Full Service',cost:180000,garage:'Kigali Auto Centre',nextDue:'2025-07-20',notes:'Engine tune-up, oil change, air filter replaced'},
+  {date:'2025-01-15',vehicleId:'V-007',type:'Tyre Replacement',cost:320000,garage:'Bridgestone RW',nextDue:'2026-01-15',notes:'4 tyres replaced — front and rear'},
+  {date:'2024-12-10',vehicleId:'V-001',type:'Oil Change',cost:55000,garage:'Toyota Rwanda Service',nextDue:'2025-06-10',notes:'Mobil 1 synthetic — 10L'},
+];
+const TRIP_HISTORY=[
+  {id:'REQ-001',empId:'U-003',driverId:'U-007',vehicleId:'V-001',route:'Kigali → Rusizi',dep:'2025-01-30 07:30',ret:'2025-01-30 18:00',dist:472,fuel:42,status:'completed'},
+  {id:'REQ-005',empId:'U-003',driverId:'U-008',vehicleId:'V-002',route:'Kigali → Nyamagabe',dep:'2025-01-28 07:00',ret:'2025-01-28 17:30',dist:198,fuel:18,status:'completed'},
+  {id:'REQ-007',empId:'U-003',driverId:'U-009',vehicleId:'V-003',route:'Kigali → Kamonyi',dep:'2025-01-25 08:00',ret:'2025-01-25 16:00',dist:88,fuel:8,status:'completed'},
+  {id:'REQ-008',empId:'U-004',driverId:'U-008',vehicleId:'V-002',route:'Kigali → Kayonza',dep:'2025-01-22 07:00',ret:'2025-01-22 15:30',dist:104,fuel:10,status:'completed'},
+];
+const GPS_VEHICLES=[
+  {id:'V-001',x:18,y:50,dx:.5,dy:-.2,status:'moving'},
+  {id:'V-003',x:62,y:28,dx:-.3,dy:.3,status:'moving'},
+  {id:'V-008',x:72,y:46,dx:.4,dy:.15,status:'moving'},
+  {id:'V-002',x:30,y:50,dx:0,dy:0,status:'idle'},
+  {id:'V-005',x:30,y:54,dx:0,dy:0,status:'idle'},
+];
+const LOCS=['Muhanga','Huye Junction','Nyabugogo','Kacyiru','Remera','Gisozi','Bugesera','Kayonza','Rwamagana','Gasabo'];
+
+/* ═══════ STATE ═══════ */
+let CU=null, activeReqId=null, editVehicleId=null, editUserId=null;
+
+/* ═══════ HELPERS ═══════ */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const uName=id=>{const u=USERS.find(u=>u.id===id);return u?u.name:'—'};
+const vName=id=>{const v=VEHICLES.find(v=>v.id===id);return v?v.plate:'—'};
+const vFull=id=>{const v=VEHICLES.find(v=>v.id===id);return v?`${v.plate} — ${v.make} ${v.model}`:'—'};
+const dName=id=>{const u=USERS.find(u=>u.id===id);return u?u.name:'—'};
+const today=()=>new Date().toISOString().split('T')[0];
+const nowStr=()=>new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+const fmt=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}):'—';
+function emptyRow(cols,msg){return`<tr><td colspan="${cols}" style="text-align:center;padding:32px;color:var(--text-3)">${msg}</td></tr>`}
+
+function pill(status){
+  const m={pending:'pi-pending',approved:'pi-approved',rejected:'pi-rejected',completed:'pi-completed',
+    available:'pi-available','in-use':'pi-in-use',maintenance:'pi-maint',
+    active:'pi-active','on-trip':'pi-in-use',
+    admin:'pi-admin',manager:'pi-manager',employee:'pi-employee',driver:'pi-driver',
+    moving:'pi-moving',idle:'pi-idle',stopped:'pi-pending',upcoming:'pi-upcoming','in-progress':'pi-in-use'};
+  const l={pending:'Pending',approved:'Approved',rejected:'Rejected',completed:'Completed',
+    available:'Available','in-use':'In Use',maintenance:'Maintenance',active:'Active',
+    'on-trip':'On Trip',admin:'Admin',manager:'Manager',employee:'Employee',driver:'Driver',
+    moving:'Moving',idle:'Idle',stopped:'Stopped',upcoming:'Upcoming','in-progress':'In Progress'};
+  return`<span class="pill ${m[status]||''}">${l[status]||status}</span>`;
+}
+
+function toast(msg,type='info'){
+  const el=document.createElement('div');
+  el.className=`toast t-${type}`;
+  const icons={success:'check_circle',error:'error',info:'info'};
+  el.innerHTML=`<span class="mi" style="font-size:16px">${icons[type]||'info'}</span> ${esc(msg)}`;
+  $('toastWrap').appendChild(el);
+  setTimeout(()=>el.remove(),3500);
+}
+
+function openModal(id){$(id).classList.add('on')}
+function closeModal(id){$(id).classList.remove('on')}
+document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on')})});
+
+function confirm_(title,msg,cb){
+  $('confirmTitle').textContent=title;
+  $('confirmMsg').textContent=msg;
+  $('confirmOk').onclick=()=>{closeModal('confirmOverlay');cb()};
+  openModal('confirmOverlay');
+}
+
+function filterTbl(tbodyId,q){
+  q=q.toLowerCase();
+  document.querySelectorAll(`#${tbodyId} tr`).forEach(tr=>{tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none'});
+}
+
+/* Mobile sidebar */
+function toggleMobileSidebar(){
+  $('sidebar').classList.toggle('mobile-open');
+  $('mobileOverlay').classList.toggle('on');
+}
+function closeMobileSidebar(){
+  $('sidebar').classList.remove('mobile-open');
+  $('mobileOverlay').classList.remove('on');
+}
+
+/* ═══════ AUTH ═══════ */
+function fillLogin(email,pw){$('loginEmail').value=email;$('loginPassword').value=pw}
+function doLogin(){
+  const email=$('loginEmail').value.trim().toLowerCase();
+  const pw=$('loginPassword').value;
+  const user=USERS.find(u=>u.email===email&&u.password===pw);
+  if(!user){$('loginError').style.display='block';return}
+  $('loginError').style.display='none';
+  CU=user;
+  $('loginPage').style.display='none';
+  $('mainApp').classList.add('visible');
+  setupRole();
+}
+function doLogout(){
+  CU=null;
+  $('mainApp').classList.remove('visible');
+  $('loginPage').style.display='flex';
+  $('loginEmail').value='';$('loginPassword').value='';
+}
+
+const ROLE_PROF={
+  admin:{email:'admin@msh.org'},manager:{email:'manager@msh.org'},
+  employee:{email:'john@msh.org'},driver:{email:'driver1@msh.org'}
+};
+
+function demoRole(role,btn){
+  document.querySelectorAll('.rsw-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  CU=USERS.find(u=>u.email===ROLE_PROF[role].email);
+  setupRole();
+  toast(`Viewing as: ${CU.name} (${role})`,'info');
+}
+
+function setupRole(){
+  const r=CU.role;
+  const initials=CU.name.split(' ').slice(0,2).map(n=>n[0]).join('');
+  $('topAvatar').textContent=initials;
+  $('topName').textContent=CU.name;
+  $('topRole').textContent=r.charAt(0).toUpperCase()+r.slice(1);
+  $('dashDate').textContent=new Date().toLocaleDateString('en-RW',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  $('navAdmin').style.display=(r==='admin'||r==='manager')?'block':'none';
+  $('navEmployee').style.display=r==='employee'?'block':'none';
+  $('navDriver').style.display=r==='driver'?'block':'none';
+
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
+
+  if(r==='admin'||r==='manager'){$('page-dashboard').classList.add('on');renderDashboard()}
+  if(r==='employee'){$('page-empDashboard').classList.add('on');renderEmpDash()}
+  if(r==='driver'){$('page-driverDashboard').classList.add('on');renderDriverDash()}
+
+  renderAll();startGPS();
+  prepareAdminModals();
+}
+
+/* ═══════ NAV ═══════ */
+function nav(page,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
+  $('page-'+page).classList.add('on');
+  if(el)el.classList.add('on');
+  const titles={dashboard:'Dashboard',liveTracking:'Live Tracking',requests:'Request Management',
+    vehicles:'Vehicle Registry',drivers:'Driver Management',users:'User Management',
+    fuel:'Fuel & Maintenance',reports:'Reports & Analytics',
+    empDashboard:'My Dashboard',newRequest:'New Travel Request',myRequests:'My Requests',
+    driverDashboard:'Driver Dashboard',myTrips:'My Trips'};
+  $('topBarTitle').textContent=titles[page]||page;
+  closeMobileSidebar();
+
+  if(page==='dashboard')renderDashboard();
+  if(page==='liveTracking')renderTrackingTable();
+  if(page==='requests')renderRequests();
+  if(page==='vehicles')renderVehicles();
+  if(page==='drivers')renderDrivers();
+  if(page==='users')renderUsers();
+  if(page==='fuel')renderFuel();
+  if(page==='reports')renderReports();
+  if(page==='empDashboard')renderEmpDash();
+  if(page==='myRequests')renderMyRequests();
+  if(page==='driverDashboard')renderDriverDash();
+  if(page==='myTrips')renderMyTrips();
+  if(page==='newRequest'){$('nrDate').value=today();$('nrReturn').value=today()}
+}
+
+function switchTab(cid,tabName,btn){
+  const c=$(cid);
+  c.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('on'));
+  c.querySelector(`[data-tab="${tabName}"]`).classList.add('on');
+  btn.closest('.tabs-bar').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+/* ═══════ MAP ═══════ */
+function buildMap(id){
+  const el=$(id);if(!el)return;
+  el.innerHTML=`
+    <div class="map-grid"></div>
+    <div class="map-road h main" style="top:49%;left:0;right:0"></div>
+    <div class="map-road h" style="top:28%;left:8%;right:0"></div>
+    <div class="map-road h" style="top:68%;left:5%;width:62%"></div>
+    <div class="map-road v mainv" style="left:30%;top:0;bottom:0"></div>
+    <div class="map-road v" style="left:65%;top:0;bottom:50%"></div>
+    <div class="map-city-label" style="top:49%;left:28%">Kigali</div>
+    <div class="map-city-label" style="top:26%;left:62%">Musanze</div>
+    <div class="map-city-label" style="top:68%;left:8%">Rusizi</div>
+    <div class="map-city-label" style="top:68%;left:52%">Huye</div>
+    <div class="map-city-label" style="top:28%;left:12%">Rubavu</div>
+    <div class="map-city-label" style="top:49%;left:72%">Rwamagana</div>
+    <div class="map-city-label" style="top:62%;left:30%">Nyamagabe</div>
+  `;
+  GPS_VEHICLES.forEach(gv=>{
+    const dot=document.createElement('div');
+    dot.className='map-vehicle';dot.id=`mv-${id}-${gv.id}`;
+    dot.style.left=gv.x+'%';dot.style.top=gv.y+'%';
+    dot.innerHTML=`<div class="mv-label">${vName(gv.id)}</div><div class="mv-dot ${gv.status}"><span class="mi" style="font-size:12px;color:#fff">directions_car</span></div>`;
+    dot.onclick=()=>toast(`${vFull(gv.id)} — ${gv.status.toUpperCase()}`,'info');
+    el.appendChild(dot);
+  });
+}
+
+function updateMapDots(id){
+  GPS_VEHICLES.forEach(gv=>{
+    const el=$(`mv-${id}-${gv.id}`);
+    if(el){el.style.left=gv.x+'%';el.style.top=gv.y+'%'}
+  });
+}
+
+function startGPS(){
+  setInterval(()=>{
+    GPS_VEHICLES.forEach(gv=>{
+      if(gv.status==='moving'){
+        gv.x=Math.max(4,Math.min(88,gv.x+gv.dx*(Math.random()*1.5+.3)));
+        gv.y=Math.max(4,Math.min(86,gv.y+gv.dy*(Math.random()*1.5+.3)));
+      }
+    });
+    updateMapDots('dashMap');updateMapDots('trackMap');
+    if($('trackTable'))renderTrackingTable();
+  },5000);
+}
+
+/* ═══════ DASHBOARD ═══════ */
+function renderDashboard(){
+  const pending=REQUESTS.filter(r=>r.status==='pending').length;
+  const active=REQUESTS.filter(r=>r.status==='approved').length;
+  $('ds-vehicles').textContent=VEHICLES.length;
+  $('ds-drivers').textContent=USERS.filter(u=>u.role==='driver').length;
+  $('ds-employees').textContent=USERS.filter(u=>u.role==='employee'||u.role==='manager').length;
+  $('ds-pending').textContent=pending;
+  $('ds-active').textContent=active;
+  ['pendingBadge','pendingCount'].forEach(id=>{if($(id))$(id).textContent=pending});
+  if($('activeCount'))$('activeCount').textContent=active;
+
+  $('dashRecentReqs').innerHTML=REQUESTS.slice(0,6).map(r=>`<tr>
+    <td class="mono">${r.id}</td>
+    <td><strong>${uName(r.empId)}</strong></td>
+    <td>${esc(r.dest)}</td>
+    <td>${pill(r.status)}</td>
+  </tr>`).join('');
+
+  const flC={available:0,'in-use':0,maintenance:0};
+  VEHICLES.forEach(v=>flC[v.status]++);
+  const flColors={available:'var(--green)','in-use':'var(--blue)',maintenance:'var(--red)'};
+  $('dashFleetStatus').innerHTML=Object.entries(flC).map(([k,v])=>`
+    <div class="bar-row">
+      <div class="bar-label">${k.charAt(0).toUpperCase()+k.slice(1)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/VEHICLES.length*100)}%;background:${flColors[k]}">${v}</div></div>
+    </div>`).join('');
+
+  buildMap('dashMap');
+}
+
+/* ═══════ TRACKING ═══════ */
+function renderTrackingTable(){
+  buildMap('trackMap');
+  $('trackTable').innerHTML=GPS_VEHICLES.map(gv=>{
+    const v=VEHICLES.find(x=>x.id===gv.id)||{};
+    const speed=gv.status==='moving'?(Math.floor(Math.random()*40)+40)+' km/h':'0 km/h';
+    const loc=gv.status==='moving'?LOCS[Math.floor(Math.random()*LOCS.length)]:'MSH HQ — Kacyiru';
+    return`<tr>
+      <td><strong>${esc(v.plate||'')}</strong></td>
+      <td>${dName(v.driver)}</td>
+      <td>${pill(gv.status)}</td>
+      <td>${esc(loc)}</td>
+      <td class="mono">${speed}</td>
+      <td class="mono" style="font-size:11px">${gv.x.toFixed(4)}, ${gv.y.toFixed(4)}</td>
+      <td class="mono" style="font-size:11px">${nowStr()}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ═══════ REQUESTS ═══════ */
+function renderRequests(){
+  const pending=REQUESTS.filter(r=>r.status==='pending');
+  const approved=REQUESTS.filter(r=>r.status==='approved'||r.status==='completed');
+  const rejected=REQUESTS.filter(r=>r.status==='rejected');
+
+  $('pendingTbl').innerHTML=pending.map(r=>`<tr>
+    <td class="mono">${r.id}</td>
+    <td><strong>${uName(r.empId)}</strong></td>
+    <td>${esc(r.dest)}</td>
+    <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.purpose)}</td>
+    <td>${fmt(r.date)}</td><td>${fmt(r.submitted)}</td>
+    <td class="td-actions">
+      <button class="btn btn-success btn-sm" onclick="openApproveModal('${r.id}')"><span class="mi mi-sm">check</span> Approve</button>
+      <button class="btn btn-ghost btn-sm" onclick="openRejectModal('${r.id}')"><span class="mi mi-sm">close</span></button>
+    </td>
+  </tr>`).join('')||emptyRow(7,'No pending requests');
+
+  $('approvedTbl').innerHTML=approved.map(r=>`<tr>
+    <td class="mono">${r.id}</td><td>${uName(r.empId)}</td><td>${esc(r.dest)}</td>
+    <td><strong>${vName(r.vehicle)}</strong></td><td>${dName(r.driver)}</td>
+    <td>${fmt(r.date)}</td><td>${pill(r.status)}</td>
+  </tr>`).join('')||emptyRow(7,'No approved requests');
+
+  $('rejectedTbl').innerHTML=rejected.map(r=>`<tr>
+    <td class="mono">${r.id}</td><td>${uName(r.empId)}</td><td>${esc(r.dest)}</td>
+    <td style="color:var(--red)">${esc(r.rejectReason||'—')}</td><td>${fmt(r.date)}</td>
+  </tr>`).join('')||emptyRow(5,'No rejected requests');
+
+  renderAllReqs();
+}
+
+function renderAllReqs(sf=''){
+  let data=sf?REQUESTS.filter(r=>r.status===sf):REQUESTS;
+  $('allReqTbl').innerHTML=data.map(r=>`<tr>
+    <td class="mono">${r.id}</td><td>${uName(r.empId)}</td><td>${esc(r.dest)}</td>
+    <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.purpose)}</td>
+    <td>${fmt(r.date)}</td><td>${pill(r.status)}</td>
+    <td class="td-actions">${r.status==='pending'?`<button class="btn btn-success btn-sm" onclick="openApproveModal('${r.id}')"><span class="mi mi-sm">check</span></button><button class="btn btn-ghost btn-sm" onclick="openRejectModal('${r.id}')"><span class="mi mi-sm">close</span></button>`:''}</td>
+  </tr>`).join('')||emptyRow(7,'No requests');
+}
+function filterReqAll(v){renderAllReqs(v)}
+
+function openApproveModal(id){
+  activeReqId=id;
+  const r=REQUESTS.find(x=>x.id===id);
+  $('approveRef').textContent=id;
+  $('approveInfo').innerHTML=`<strong>${uName(r.empId)}</strong> &mdash; ${esc(r.dest)}<br><span style="color:var(--text-3);font-size:12px">${esc(r.purpose)}</span><br><span style="font-size:12px">Date: <strong>${fmt(r.date)}</strong> at ${r.time} &nbsp;|&nbsp; Return: <strong>${fmt(r.returnDate)}</strong> &nbsp;|&nbsp; Passengers: <strong>${r.pax}</strong></span>`;
+  const avV=VEHICLES.filter(v=>v.status==='available');
+  const avD=USERS.filter(u=>u.role==='driver');
+  $('approveVehicle').innerHTML='<option value="">— Select Available Vehicle —</option>'+avV.map(v=>`<option value="${v.id}">${v.plate} — ${v.make} ${v.model}</option>`).join('');
+  $('approveDriver').innerHTML='<option value="">— Select Available Driver —</option>'+avD.map(u=>`<option value="${u.id}">${u.name}</option>`).join('');
+  openModal('modalApprove');
+}
+
+function doApprove(){
+  const vid=$('approveVehicle').value;const did=$('approveDriver').value;
+  if(!vid||!did){toast('Please assign both a vehicle and a driver','error');return}
+  const r=REQUESTS.find(x=>x.id===activeReqId);
+  r.status='approved';r.vehicle=vid;r.driver=did;
+  const v=VEHICLES.find(x=>x.id===vid);if(v)v.status='in-use';
+  closeModal('modalApprove');renderAll();
+  toast(`Request ${activeReqId} approved and resources assigned`,'success');
+}
+
+function openRejectModal(id){activeReqId=id;openModal('modalReject')}
+function doReject(){closeModal('modalApprove');openModal('modalReject')}
+function confirmReject(){
+  const r=REQUESTS.find(x=>x.id===activeReqId);
+  r.status='rejected';r.rejectReason=$('rejectReason').value;
+  closeModal('modalReject');renderAll();
+  toast(`Request ${activeReqId} rejected`,'error');
+}
+
+/* ═══════ VEHICLES ═══════ */
+function renderVehicles(sf=''){
+  let data=sf?VEHICLES.filter(v=>v.status===sf):VEHICLES;
+  $('vehicleTbl').innerHTML=data.map(v=>{
+    const od=v.mileage>=v.nextService-2000;
+    return`<tr>
+      <td><strong>${v.plate}</strong></td>
+      <td>${v.make} ${v.model}</td>
+      <td>${v.year}</td><td>${v.type}</td>
+      <td class="mono" style="font-size:11px">${v.gps}</td>
+      <td>${pill(v.status)}</td>
+      <td>${v.driver?dName(v.driver):`<span style="color:var(--text-3)">Unassigned</span>`}</td>
+      <td class="mono">${v.mileage.toLocaleString()} km
+        <div class="prog-bar"><div class="prog-fill" style="width:${Math.min(100,Math.round(v.mileage/v.nextService*100))}%;background:${od?'var(--red)':'var(--blue)'}"></div></div>
+      </td>
+      <td class="mono" style="color:${od?'var(--red)':'inherit'};font-weight:${od?'600':'400'}">${v.nextService.toLocaleString()} km</td>
+      <td class="td-actions">
+        <button class="btn-ghost btn-icon btn-sm" onclick="editVehicle('${v.id}')"><span class="mi mi-sm">edit</span></button>
+        <button class="btn-ghost btn-icon btn-sm" onclick="delVehicle('${v.id}')"><span class="mi mi-sm">delete</span></button>
+      </td>
+    </tr>`;
+  }).join('')||emptyRow(10,'No vehicles found');
+}
+function filterVehicles(v){renderVehicles(v)}
+
+function editVehicle(id){
+  editVehicleId=id;const v=VEHICLES.find(x=>x.id===id);
+  $('vModalTitle').textContent='Edit Vehicle';
+  $('vPlate').value=v.plate;$('vMake').value=v.make;$('vModel').value=v.model;
+  $('vYear').value=v.year;$('vMileage').value=v.mileage;$('vNextService').value=v.nextService;
+  $('vGPS').value=v.gps;populateDriverSel('vDriver');$('vDriver').value=v.driver||'';
+  openModal('modalVehicle');
+}
+
+function saveVehicle(){
+  const plate=$('vPlate').value.trim(),make=$('vMake').value.trim(),model=$('vModel').value.trim();
+  if(!plate||!make||!model){toast('Plate, Make and Model are required','error');return}
+  if(editVehicleId){
+    const v=VEHICLES.find(x=>x.id===editVehicleId);
+    Object.assign(v,{plate,make,model,year:parseInt($('vYear').value)||2024,type:$('vType').value,fuel:$('vFuel').value,mileage:parseInt($('vMileage').value)||0,nextService:parseInt($('vNextService').value)||5000,gps:$('vGPS').value,driver:$('vDriver').value});
+    toast(`Vehicle ${plate} updated`,'success');
+  }else{
+    VEHICLES.push({id:'V-'+(VEHICLES.length+1).toString().padStart(3,'0'),plate,make,model,year:parseInt($('vYear').value)||2024,type:$('vType').value,fuel:$('vFuel').value,status:'available',driver:$('vDriver').value,mileage:parseInt($('vMileage').value)||0,nextService:parseInt($('vNextService').value)||5000,gps:$('vGPS').value||('GPS-RW-'+(VEHICLES.length+1).toString().padStart(3,'0'))});
+    toast(`Vehicle ${plate} registered`,'success');
+  }
+  editVehicleId=null;closeModal('modalVehicle');renderVehicles();renderDashboard();
+}
+
+function delVehicle(id){
+  const v=VEHICLES.find(x=>x.id===id);
+  confirm_('Delete Vehicle',`Remove ${v.plate} — ${v.make} ${v.model}?`,()=>{
+    VEHICLES.splice(VEHICLES.findIndex(x=>x.id===id),1);renderVehicles();renderDashboard();
+    toast('Vehicle removed','info');
+  });
+}
+
+function populateDriverSel(selId){
+  const d=USERS.filter(u=>u.role==='driver');
+  $(selId).innerHTML='<option value="">— Unassigned —</option>'+d.map(u=>`<option value="${u.id}">${u.name}</option>`).join('');
+}
+
+/* ═══════ DRIVERS ═══════ */
+function renderDrivers(){
+  const drivers=USERS.filter(u=>u.role==='driver');
+  $('driverTbl').innerHTML=drivers.map(d=>{
+    const vehicle=VEHICLES.find(v=>v.driver===d.id);
+    return`<tr>
+      <td class="mono">${d.id}</td>
+      <td><strong>${d.name}</strong></td>
+      <td class="mono" style="font-size:12px">${d.phone||'—'}</td>
+      <td class="mono" style="font-size:12px">${d.license||'—'}</td>
+      <td>${d.licCat||'B — Light vehicles'}</td>
+      <td>${d.expiry||'—'}</td>
+      <td>${vehicle?vehicle.plate:`<span style="color:var(--text-3)">None</span>`}</td>
+      <td>${pill(vehicle?'in-use':'available')}</td>
+      <td class="td-actions"><button class="btn-ghost btn-icon btn-sm" onclick="delUser('${d.id}')"><span class="mi mi-sm">delete</span></button></td>
+    </tr>`;
+  }).join('')||emptyRow(9,'No drivers registered');
+}
+
+function saveDriver(){
+  const name=$('dName').value.trim();
+  if(!name){toast('Driver name is required','error');return}
+  const nu={id:'U-'+(USERS.length+1).toString().padStart(3,'0'),name,email:name.split(' ')[0].toLowerCase()+'@msh.org',password:'password',role:'driver',dept:'Logistics',pos:'Vehicle Driver',phone:$('dPhone').value,active:true,requests:0,license:$('dLicense').value,licCat:$('dLicCat').value,expiry:$('dExpiry').value,nid:$('dNID').value};
+  USERS.push(nu);
+  const vid=$('dVehicle').value;if(vid){const v=VEHICLES.find(x=>x.id===vid);if(v)v.driver=nu.id}
+  closeModal('modalDriver');renderDrivers();renderDashboard();
+  toast(`Driver ${name} added`,'success');
+}
+
+/* ═══════ USERS ═══════ */
+function renderUsers(rf=''){
+  let data=rf?USERS.filter(u=>u.role===rf):USERS;
+  $('userTbl').innerHTML=data.map(u=>`<tr>
+    <td class="mono">${u.id}</td>
+    <td><strong>${u.name}</strong></td>
+    <td class="mono" style="font-size:12px">${u.email}</td>
+    <td>${u.dept||'—'}</td>
+    <td>${pill(u.role)}</td>
+    <td style="text-align:center">${u.requests||0}</td>
+    <td>${pill(u.active?'available':'rejected')}</td>
+    <td class="td-actions">
+      <button class="btn-ghost btn-icon btn-sm" onclick="editUser('${u.id}')"><span class="mi mi-sm">edit</span></button>
+      <button class="btn-ghost btn-icon btn-sm" onclick="delUser('${u.id}')"><span class="mi mi-sm">delete</span></button>
+    </td>
+  </tr>`).join('');
+}
+function filterUsers(v){renderUsers(v)}
+
+function editUser(id){
+  editUserId=id;const u=USERS.find(x=>x.id===id);
+  $('uModalTitle').textContent='Edit User';
+  $('uName').value=u.name;$('uEmail').value=u.email;$('uDept').value=u.dept||'Programme';
+  $('uPos').value=u.pos||'';$('uPhone').value=u.phone||'';$('uRole').value=u.role;
+  $('uPassword').value='';$('uPassword2').value='';
+  openModal('modalUser');
+}
+
+function saveUser(){
+  const name=$('uName').value.trim(),email=$('uEmail').value.trim();
+  if(!name||!email){toast('Name and email are required','error');return}
+  if(editUserId){
+    const u=USERS.find(x=>x.id===editUserId);
+    Object.assign(u,{name,email,dept:$('uDept').value,pos:$('uPos').value,phone:$('uPhone').value,role:$('uRole').value});
+    toast('User updated','success');editUserId=null;
+  }else{
+    const pw=$('uPassword').value;if(!pw){toast('Password is required','error');return}
+    USERS.push({id:'U-'+(USERS.length+1).toString().padStart(3,'0'),name,email,password:pw,role:$('uRole').value,dept:$('uDept').value,pos:$('uPos').value,phone:$('uPhone').value,active:true,requests:0});
+    toast(`Account created for ${name}`,'success');
+  }
+  closeModal('modalUser');renderUsers();renderDrivers();renderDashboard();
+}
+
+function delUser(id){
+  const u=USERS.find(x=>x.id===id);
+  confirm_('Remove User',`Remove ${u.name} from the system?`,()=>{
+    USERS.splice(USERS.findIndex(x=>x.id===id),1);renderUsers();renderDrivers();renderDashboard();
+    toast('User removed','info');
+  });
+}
+
+/* ═══════ FUEL & MAINT ═══════ */
+function renderFuel(){
+  $('fuelTbl').innerHTML=FUEL_LOGS.map(f=>`<tr>
+    <td>${fmt(f.date)}</td><td><strong>${vName(f.vehicleId)}</strong></td>
+    <td>${dName(f.driverId)}</td><td class="mono">${f.litres} L</td>
+    <td class="mono">RWF ${f.cost.toLocaleString()}</td>
+    <td class="mono">${f.odometer.toLocaleString()} km</td>
+    <td>${esc(f.station)}</td><td>${esc(f.by)}</td>
+  </tr>`).join('');
+
+  $('maintTbl').innerHTML=MAINT_LOGS.map(m=>`<tr>
+    <td>${fmt(m.date)}</td><td><strong>${vName(m.vehicleId)}</strong></td>
+    <td>${esc(m.type)}</td><td class="mono">RWF ${m.cost.toLocaleString()}</td>
+    <td>${esc(m.garage)}</td><td>${fmt(m.nextDue)}</td>
+    <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(m.notes)}</td>
+  </tr>`).join('');
+
+  const opts=VEHICLES.map(v=>`<option value="${v.id}">${v.plate} — ${v.make} ${v.model}</option>`).join('');
+  $('fVehicle').innerHTML=opts;$('mVehicle').innerHTML=opts;
+  const dOpts=USERS.filter(u=>u.role==='driver').map(u=>`<option value="${u.id}">${u.name}</option>`).join('');
+  $('fDriver').innerHTML=dOpts;
+  $('fDate').value=today();$('mDate').value=today();
+}
+
+function saveFuel(){
+  FUEL_LOGS.unshift({date:$('fDate').value,vehicleId:$('fVehicle').value,driverId:$('fDriver').value,litres:parseInt($('fLitres').value)||0,cost:parseInt($('fCost').value)||0,odometer:parseInt($('fOdometer').value)||0,station:$('fStation').value,by:CU?CU.name:'Admin'});
+  closeModal('modalFuel');renderFuel();toast('Fuel record saved','success');
+}
+function saveMaint(){
+  MAINT_LOGS.unshift({date:$('mDate').value,vehicleId:$('mVehicle').value,type:$('mType').value,cost:parseInt($('mCost').value)||0,garage:$('mGarage').value,nextDue:$('mNextDue').value,notes:$('mNotes').value});
+  closeModal('modalMaint');renderFuel();toast('Maintenance record saved','success');
+}
+
+/* ═══════ REPORTS ═══════ */
+function renderReports(){
+  const bars=(data)=>data.map(([l,v,max,c])=>`
+    <div class="bar-row">
+      <div class="bar-label">${l}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/max*100)}%;background:${c}">${v}</div></div>
+    </div>`).join('');
+
+  $('rptTrips').innerHTML=bars([['RAB 123 A',12,12,'var(--navy)'],['RAD 789 C',9,12,'var(--blue)'],['RAI 404 I',8,12,'var(--blue)'],['RAC 456 B',6,12,'var(--blue)'],['RAF 101 F',4,12,'var(--blue)']]);
+  $('rptDist').innerHTML=bars([['Kigali→Rusizi',472,472,'var(--navy)'],['Kigali→Huye',198,472,'var(--blue)'],['Kigali→Kayonza',104,472,'var(--blue)'],['Kigali→Kamonyi',88,472,'var(--green)'],['Kigali→Musanze',103,472,'var(--green)']]);
+  $('rptFuel').innerHTML=bars([['RAB 123 A',180,180,'var(--navy)'],['RAG 202 G',160,180,'var(--blue)'],['RAH 303 H',140,180,'var(--blue)'],['RAD 789 C',120,180,'var(--green)'],['RAI 404 I',90,180,'var(--green)']]);
+
+  $('tripHistTbl').innerHTML=TRIP_HISTORY.map(t=>`<tr>
+    <td class="mono">${t.id}</td>
+    <td>${uName(t.empId)}</td><td>${dName(t.driverId)}</td>
+    <td><strong>${vName(t.vehicleId)}</strong></td>
+    <td>${esc(t.route)}</td>
+    <td class="mono" style="font-size:11px">${t.dep}</td>
+    <td class="mono" style="font-size:11px">${t.ret}</td>
+    <td class="mono">${t.dist} km</td>
+    <td class="mono">${t.fuel} L</td>
+    <td>${pill(t.status)}</td>
+  </tr>`).join('')||emptyRow(10,'No completed trips');
+}
+
+/* ═══════ EMPLOYEE ═══════ */
+function renderEmpDash(){
+  if(!CU)return;
+  $('empDashGreet').textContent=`Welcome, ${CU.name} — ${new Date().toLocaleDateString('en-RW',{weekday:'long',month:'long',day:'numeric'})}`;
+  const my=REQUESTS.filter(r=>r.empId===CU.id);
+  $('empTotal').textContent=my.length;
+  $('empPending').textContent=my.filter(r=>r.status==='pending').length;
+  $('empApproved').textContent=my.filter(r=>r.status==='approved').length;
+  $('empRecentReqs').innerHTML=my.slice(0,5).map(r=>`<tr>
+    <td class="mono">${r.id}</td>
+    <td><strong>${esc(r.dest)}</strong></td>
+    <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.purpose)}</td>
+    <td>${fmt(r.date)}</td><td>${pill(r.status)}</td>
+  </tr>`).join()||`<tr><td colspan="5"><div class="empty-state"><span class="mi">assignment</span><p>No requests submitted yet.</p></div></td></tr>`;
+}
+
+function renderMyRequests(){
+  if(!CU)return;
+  const my=REQUESTS.filter(r=>r.empId===CU.id);
+  $('myReqTbl').innerHTML=my.map(r=>`<tr>
+    <td class="mono">${r.id}</td>
+    <td><strong>${esc(r.dest)}</strong></td>
+    <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.purpose)}</td>
+    <td>${fmt(r.date)}</td>
+    <td>${r.vehicle?vName(r.vehicle):`<span style="color:var(--text-3)">—</span>`}</td>
+    <td>${r.driver?dName(r.driver):`<span style="color:var(--text-3)">—</span>`}</td>
+    <td>${pill(r.status)}</td>
+    <td>${r.status==='pending'?`<button class="btn btn-ghost btn-sm" onclick="withdrawReq('${r.id}')"><span class="mi mi-sm">undo</span> Withdraw</button>`:''}</td>
+  </tr>`).join('')||emptyRow(8,'No requests submitted yet.');
+}
+
+function withdrawReq(id){
+  confirm_('Withdraw Request','Remove this pending request?',()=>{
+    const i=REQUESTS.findIndex(r=>r.id===id);if(i>-1)REQUESTS.splice(i,1);
+    renderMyRequests();renderEmpDash();toast('Request withdrawn','info');
+  });
+}
+
+function submitRequest(){
+  const dest=$('nrDest').value.trim(),purp=$('nrPurpose').value.trim(),date=$('nrDate').value;
+  if(!dest||!purp||!date){toast('Please fill all required fields','error');return}
+  const nr={id:'REQ-'+(REQUESTS.length+1).toString().padStart(3,'0'),empId:CU.id,dest,purpose:purp,date,time:$('nrTime').value,returnDate:$('nrReturn').value,pax:parseInt($('nrPax').value)||1,status:'pending',vehicle:'',driver:'',submitted:today(),notes:$('nrNotes').value};
+  REQUESTS.unshift(nr);CU.requests=(CU.requests||0)+1;
+  $('nrDest').value='';$('nrPurpose').value='';$('nrNotes').value='';
+  renderEmpDash();renderMyRequests();renderDashboard();
+  toast('Request '+nr.id+' submitted','success');
+  nav('myRequests',null);
+}
+
+function submitRequestAdmin(){
+  const dest=$('mnrDest').value.trim(),purp=$('mnrPurpose').value.trim(),date=$('mnrDate').value;
+  if(!dest||!purp||!date){toast('Please fill required fields','error');return}
+  const sel=$('mnrEmployee');
+  const empId=sel.value||USERS.find(u=>u.role==='employee')?.id;
+  REQUESTS.unshift({id:'REQ-'+(REQUESTS.length+1).toString().padStart(3,'0'),empId,dest,purpose:purp,date,time:$('mnrTime').value,returnDate:$('mnrReturn').value,pax:parseInt($('mnrPax').value)||1,status:'pending',vehicle:'',driver:'',submitted:today(),notes:''});
+  closeModal('modalNewRequest');renderDashboard();renderRequests();toast('Request submitted','success');
+}
+
+/* ═══════ DRIVER ═══════ */
+function renderDriverDash(){
+  if(!CU)return;
+  $('driverGreet').textContent=`Welcome, ${CU.name}`;
+  const myV=VEHICLES.find(v=>v.driver===CU.id);
+  const myT=REQUESTS.filter(r=>r.driver===CU.id&&r.status==='approved');
+  $('upcomingCount').textContent=myT.length;
+
+  $('driverTripCards').innerHTML=myT.length?myT.map(r=>`
+    <div class="trip-card">
+      <div class="trip-icon"><span class="mi mi-lg">directions_car</span></div>
+      <div class="trip-card-body">
+        <div class="trip-card-title">${esc(r.dest)}</div>
+        <div class="trip-card-meta">${esc(r.purpose)} &mdash; ${fmt(r.date)} at ${r.time} &mdash; Employee: ${uName(r.empId)}</div>
+      </div>
+      <div><button class="btn btn-success btn-sm" onclick="startTrip('${r.id}')"><span class="mi mi-sm">play_arrow</span> Start Trip</button></div>
+    </div>`).join(''):
+    `<div class="alert alert-info"><span class="mi">info</span> No upcoming trips assigned to you at this time.</div>`;
+
+  if(myV){
+    $('driverVehicleInfo').innerHTML=`
+      <div class="info-row"><span class="ik">Plate Number</span><span class="iv">${myV.plate}</span></div>
+      <div class="info-row"><span class="ik">Make / Model</span><span class="iv">${myV.make} ${myV.model}</span></div>
+      <div class="info-row"><span class="ik">Year</span><span class="iv">${myV.year}</span></div>
+      <div class="info-row"><span class="ik">Fuel Type</span><span class="iv">${myV.fuel}</span></div>
+      <div class="info-row"><span class="ik">GPS Tracker</span><span class="iv mono" style="font-size:12px">${myV.gps}</span></div>
+      <div class="info-row"><span class="ik">Current Mileage</span><span class="iv">${myV.mileage.toLocaleString()} km</span></div>
+      <div class="info-row"><span class="ik">Status</span><span class="iv">${pill(myV.status)}</span></div>`;
+  }else{
+    $('driverVehicleInfo').innerHTML='<div style="color:var(--text-3);font-size:13px">No vehicle currently assigned.</div>';
+  }
+}
+
+function renderMyTrips(){
+  if(!CU)return;
+  const my=REQUESTS.filter(r=>r.driver===CU.id);
+  $('myTripsTbl').innerHTML=my.map(r=>`<tr>
+    <td class="mono">${r.id}</td>
+    <td>${uName(r.empId)}</td>
+    <td>Kigali → ${esc(r.dest)}</td>
+    <td>${fmt(r.date)}</td>
+    <td>${vName(r.vehicle)}</td>
+    <td>${pill(r.status==='approved'?'upcoming':r.status)}</td>
+    <td class="td-actions">
+      ${r.status==='approved'?`<button class="btn btn-success btn-sm" onclick="startTrip('${r.id}')"><span class="mi mi-sm">play_arrow</span> Start</button>`:''}
+      <button class="btn-ghost btn-icon btn-sm" onclick="toast('Trip details viewed','info')"><span class="mi mi-sm">info</span></button>
+    </td>
+  </tr>`).join('')||emptyRow(7,'No trips assigned to you yet.');
+}
+
+function startTrip(reqId){
+  const r=REQUESTS.find(x=>x.id===reqId);
+  if(r){r.status='in-progress'}
+  renderDriverDash();renderMyTrips();
+  toast('Trip started — GPS tracking active','success');
+}
+
+/* ═══════ MODALS PREP ═══════ */
+function prepareAdminModals(){
+  const emp=USERS.filter(u=>u.role==='employee'||u.role==='manager');
+  $('mnrEmployee').innerHTML=emp.map(u=>`<option value="${u.id}">${u.name} — ${u.dept}</option>`).join('');
+  $('mnrDate').value=today();$('mnrReturn').value=today();
+  populateDriverSel('dVehicle');
+
+  const vOpts=VEHICLES.map(v=>`<option value="${v.id}">${v.plate} — ${v.make} ${v.model}</option>`).join('');
+  ['vDriver'].forEach(id=>populateDriverSel(id));
+}
+
+/* ═══════ RENDER ALL ═══════ */
+function renderAll(){
+  renderDashboard();renderRequests();renderVehicles();
+  renderDrivers();renderUsers();renderFuel();renderReports();
+  const p=REQUESTS.filter(r=>r.status==='pending').length;
+  ['pendingBadge','pendingCount'].forEach(id=>{if($(id))$(id).textContent=p});
+  const a=REQUESTS.filter(r=>r.status==='approved').length;
+  if($('activeCount'))$('activeCount').textContent=a;
+}
+
+/* ═══════ INIT ═══════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  $('loginEmail').value='admin@msh.org';
+  $('loginPassword').value='password';
+  $('nrDate').value=today();
+  $('nrReturn').value=today();
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('loginPage').style.display!=='none'){doLogin()}
+});
+</script>
+</body>
+</html>
