@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-bg font-sans text-[14px] text-ink antialiased;
+  }
+
+  ::selection {
+    @apply bg-blue-lt text-ink;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded bg-line-dark;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-blue;
+  }
+}
+
+@layer components {
+  .section-title {
+    @apply mb-3 mt-6 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-3;
+  }
+
+  .section-title::before,
+  .section-title::after {
+    content: '';
+    @apply h-px flex-1 bg-line;
+  }
+}
+
+.leaflet-container {
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.leaflet-container .leaflet-control-attribution {
+  @apply text-[10px] text-ink-3;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply rounded-lg border border-line shadow-card;
+}
+
+.leaflet-popup-content {
+  @apply font-sans;
+}

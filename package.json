@@ -1,0 +1,40 @@
+{
+  "name": "fleet-management-system",
+  "private": true,
+  "version": "2.0.0",
+  "author": "Elyse Kejoo",
+  "description": "Role-based Fleet Management System for MSH Rwanda — USAID IREME Project",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "db:demo": "node scripts/setup-demo-users.mjs"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.9.1",
+    "@supabase/supabase-js": "^2.47.10",
+    "@tanstack/react-query": "^5.68.0",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.475.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.55.0",
+    "react-router-dom": "^7.1.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.15",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.4",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "pg": "^8.23.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.7"
+  }
+}
