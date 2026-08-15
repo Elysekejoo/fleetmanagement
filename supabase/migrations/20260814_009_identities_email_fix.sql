@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM — 009 IDENTITIES EMAIL FIX
--- MSH Rwanda · USAID IREME Project
+-- MSH Rwanda · Fleet FMS
 --
 -- Recent GoTrue versions define auth.identities.email as a
 -- GENERATED column (lower(identity_data->>'email')). Inserting

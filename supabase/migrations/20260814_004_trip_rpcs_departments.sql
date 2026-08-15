@@ -1,7 +1,7 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM — 004 TRIP RPCs, DEPARTMENTS,
 -- STAFF ACCOUNT CREATION
--- MSH Rwanda · USAID IREME Project
+-- MSH Rwanda · Fleet FMS
 -- ============================================================
 
 -- ============================================================

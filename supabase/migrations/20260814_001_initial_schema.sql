@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM — 001 INITIAL SCHEMA
--- MSH Rwanda · USAID IREME Project
+-- MSH Rwanda · Fleet FMS
 -- ============================================================
 
 -- Enums

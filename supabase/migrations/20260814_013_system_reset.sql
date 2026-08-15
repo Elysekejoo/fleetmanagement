@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM — 013 SYSTEM DATA RESET
--- MSH Rwanda · USAID IREME Project
+-- MSH Rwanda · Fleet FMS
 --
 -- Dangerous, irreversible "reset all system data" for admins.
 -- Wipes every transaction, GPS reading, notification, password

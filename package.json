@@ -3,7 +3,7 @@
   "private": true,
   "version": "2.0.0",
   "author": "Elyse Kejoo",
-  "description": "Role-based Fleet Management System for MSH Rwanda — USAID IREME Project",
+  "description": "Role-based Fleet Management System for MSH Rwanda",
   "type": "module",
   "scripts": {
     "dev": "vite",

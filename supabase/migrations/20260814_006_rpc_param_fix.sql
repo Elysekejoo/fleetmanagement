@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM — 006 RPC PARAMETER FIX
--- MSH Rwanda · USAID IREME Project
+-- MSH Rwanda · Fleet FMS
 --
 -- PostgREST fails to resolve RPC calls against functions with
 -- defaulted parameters ("no matches were found in the schema

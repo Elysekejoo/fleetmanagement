@@ -6,10 +6,10 @@ export const DEFAULT_SETTINGS: AppSettings = {
   id: 1,
   system_name: 'Fleet FMS',
   org_name: 'Management Sciences for Health',
-  org_line: 'USAID-IREME Project · Rwanda',
-  location_line: 'Kigali, Rwanda · USAID-IREME',
+  org_line: 'MSH Rwanda',
+  location_line: 'Kigali, Rwanda',
   footer_line_1: 'FMS v2.0 - MSH Rwanda',
-  footer_line_2: 'USAID-IREME · Kigali, Rwanda',
+  footer_line_2: 'MSH Rwanda · Kigali, Rwanda',
   hero_title: 'Fleet Management & GPS Tracking System',
   hero_subtitle:
     'A centralized platform for managing organizational vehicles, travel requests, driver assignments, fuel and maintenance records, and fleet visibility across Rwanda.',

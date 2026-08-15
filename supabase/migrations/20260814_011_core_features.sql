@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM - 011 CORE FEATURES
--- MSH Rwanda . USAID IREME Project
+-- MSH Rwanda . Fleet FMS
 --
 -- 1. app_settings: single-row table for dynamic / admin-editable
 --    branding (web name, org name, taglines, footers, hero copy).
@@ -19,10 +19,10 @@ create table public.app_settings (
   id integer primary key default 1 check (id = 1),
   system_name text not null default 'Fleet FMS',
   org_name text not null default 'Management Sciences for Health',
-  org_line text not null default 'USAID-IREME Project . Rwanda',
-  location_line text not null default 'Kigali, Rwanda . USAID-IREME',
+  org_line text not null default 'MSH Rwanda',
+  location_line text not null default 'Kigali, Rwanda',
   footer_line_1 text not null default 'FMS v2.0 - MSH Rwanda',
-  footer_line_2 text not null default 'USAID-IREME . Kigali, Rwanda',
+  footer_line_2 text not null default 'MSH Rwanda . Kigali, Rwanda',
   hero_title text not null default 'Fleet Management & GPS Tracking System',
   hero_subtitle text not null default 'A centralized platform for managing organizational vehicles, travel requests, driver assignments, fuel and maintenance records, and fleet visibility across Rwanda.',
   mission_title text not null default 'Rwanda',

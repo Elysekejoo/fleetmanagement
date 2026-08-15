@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM - 012 DEACTIVATION FIX
--- MSH Rwanda . USAID IREME Project
+-- MSH Rwanda . Fleet FMS
 --
 -- 1. Fix profiles_read RLS: admins must see deactivated users
 --    so they can manage / re-activate them. Previously a user

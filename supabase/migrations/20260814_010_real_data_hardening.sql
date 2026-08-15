@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM — 010 REAL DATA HARDENING
--- MSH Rwanda · USAID IREME Project
+-- MSH Rwanda · Fleet FMS
 --
 -- 1. Remove DEFAULT parameter values from RPCs so PostgREST
 --    matches parameters by name deterministically (PGRST202

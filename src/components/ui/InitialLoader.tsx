@@ -24,7 +24,7 @@ export function InitialLoader() {
         style={{ border: '3px solid rgba(245,180,0,0.25)', borderTopColor: '#F5B400' }}
       />
       <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.35em] text-slate-400">
-        MSH RWANDA · USAID-IREME
+        MSH RWANDA
       </p>
     </div>
   );

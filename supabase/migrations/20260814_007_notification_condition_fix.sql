@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM — 007 NOTIFICATION CONDITION FIX
--- MSH Rwanda · USAID IREME Project
+-- MSH Rwanda · Fleet FMS
 --
 -- `record IS NOT NULL` on a PL/pgSQL RECORD uses *row composite*
 -- semantics in some contexts: for a row fetched with

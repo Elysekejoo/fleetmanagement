@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM — 003 DEMO SEED DATA
--- MSH Rwanda · USAID IREME Project
+-- MSH Rwanda · Fleet FMS
 -- ============================================================
 
 -- Demo users ----------------------------------------------------
@@ -125,7 +125,7 @@ insert into public.travel_requests (
   (
     '11111111-1111-4111-8111-111111111111', 'REQ-001',
     'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
-    'Kigali (Office)', 'Nyagatare District', 'Support USAID IREME field activity',
+    'Kigali (Office)', 'Nyagatare District', 'Support field operations in the northern region',
     '2026-08-15', '2026-08-15', '07:00', 3, 'high',
     'approved', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '2026-08-13 09:12:00+00',
     'dddddddd-dddd-4ddd-8ddd-dddddddddddd', 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',

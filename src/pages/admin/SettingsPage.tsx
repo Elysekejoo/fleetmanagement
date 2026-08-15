@@ -15,10 +15,10 @@ import type { AppSettings } from '@/types/domain';
 const FIELD_LABELS: Array<{ key: keyof AppSettings; label: string; hint?: string; textarea?: boolean }> = [
   { key: 'system_name', label: 'Web / System name', hint: 'Shown next to the logo on the login page and top bar.' },
   { key: 'org_name', label: 'Organisation name' },
-  { key: 'org_line', label: 'Organisation tagline', hint: 'e.g. USAID-IREME Project · Rwanda' },
-  { key: 'location_line', label: 'Location line', hint: 'e.g. Kigali, Rwanda · USAID-IREME' },
+  { key: 'org_line', label: 'Organisation tagline', hint: 'e.g. MSH Rwanda · Fleet Management' },
+  { key: 'location_line', label: 'Location line', hint: 'e.g. Kigali, Rwanda' },
   { key: 'footer_line_1', label: 'Footer line 1', hint: 'e.g. FMS v2.0 - MSH Rwanda' },
-  { key: 'footer_line_2', label: 'Footer line 2', hint: 'e.g. USAID-IREME · Kigali, Rwanda' },
+  { key: 'footer_line_2', label: 'Footer line 2', hint: 'e.g. MSH Rwanda · Kigali, Rwanda' },
   { key: 'hero_title', label: 'Login page title', hint: 'Text after the "&" is highlighted in gold.' },
   { key: 'hero_subtitle', label: 'Login page subtitle', textarea: true },
   { key: 'mission_title', label: 'Mission title', hint: 'e.g. Rwanda' },

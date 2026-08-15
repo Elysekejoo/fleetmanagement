@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM — 008 PGGCRYPTO SCHEMA FIX
--- MSH Rwanda · USAID IREME Project
+-- MSH Rwanda · Fleet FMS
 --
 -- On Supabase, pgcrypto (gen_salt / crypt) is installed in the
 -- `extensions` schema. With `set search_path = public` the

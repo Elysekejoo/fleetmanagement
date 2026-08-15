@@ -1,6 +1,6 @@
 -- ============================================================
 -- FLEET MANAGEMENT SYSTEM — 005 TRIP POLICY FIX
--- MSH Rwanda · USAID IREME Project
+-- MSH Rwanda · Fleet FMS
 --
 -- 1. Trips are created by admins when approving a request;
 --    the trips table had no INSERT policy, so approval failed
