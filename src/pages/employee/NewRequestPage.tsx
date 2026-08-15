@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { Field, FieldError, FormRow, Input, Label, Select, Textarea } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
 import { useAuth } from '@/features/auth/AuthContext';
+import { friendlyError } from '@/lib/errors';
 import { addDaysIso } from '@/lib/utils';
 
 const tomorrow = addDaysIso(1);
@@ -71,7 +72,7 @@ export default function NewRequestPage() {
       void queryClient.invalidateQueries({ queryKey: ['requests'] });
       navigate('/employee/requests');
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Submission failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to submit this request. Please try again.')),
   });
 
   const {

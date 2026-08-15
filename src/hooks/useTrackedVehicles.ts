@@ -22,7 +22,7 @@ export function useTrackedVehicles(): TrackedVehiclesResult {
   const query = useQuery({
     queryKey: ['tracked-vehicles', source.mode],
     queryFn: () => source.load(),
-    refetchInterval: source.mode === 'demo' ? 5_000 : undefined,
+    refetchInterval: 5_000,
     staleTime: source.mode === 'demo' ? 5_000 : 30_000,
   });
 

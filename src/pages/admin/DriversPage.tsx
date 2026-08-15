@@ -15,6 +15,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { Field, FieldError, FormRow, Input, Label, Select } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
+import { friendlyError } from '@/lib/errors';
 import { fmtDate } from '@/lib/utils';
 import type { Profile } from '@/types/domain';
 
@@ -109,7 +110,7 @@ export default function DriversPage() {
       setCreating(false);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to save the driver. Please try again.')),
   });
 
   const assignMutation = useMutation({
@@ -119,7 +120,7 @@ export default function DriversPage() {
       toast.show('success', 'Vehicle assignment updated');
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Assignment failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to assign the vehicle. Please try again.')),
   });
 
   const resetMutation = useMutation({
@@ -129,7 +130,7 @@ export default function DriversPage() {
       setResetting(null);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Password reset failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to reset the password. Please try again.')),
   });
 
   const removeMutation = useMutation({
@@ -145,7 +146,7 @@ export default function DriversPage() {
       setRemoving(null);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to save the driver. Please try again.')),
   });
 
   const departmentName = useMemo(() => {

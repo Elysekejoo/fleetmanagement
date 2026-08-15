@@ -13,9 +13,27 @@ export async function fetchProfile(userId: string): Promise<Profile | null> {
 }
 
 export async function fetchProfiles(): Promise<Profile[]> {
-  const { data, error } = await supabase.from('profiles').select('*').order('full_name');
+  let { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .not('is_master_admin', 'is', true)
+    .order('full_name');
+  // If migration 011 (is_master_admin) has not been applied yet,
+  // fall back to the plain list so the page keeps working.
+  if (error && /is_master_admin|PGRST204|schema cache/i.test(error.message)) {
+    ({ data, error } = await supabase.from('profiles').select('*').order('full_name'));
+  }
   if (error) throw error;
   return data ?? [];
+}
+
+export async function adminChangeUserEmail(userId: string, email: string): Promise<void> {
+  const { error } = await supabase.rpc('admin_update_email', {
+    p_user_id: userId,
+    p_email: email,
+  });
+  if (error) throw error;
+  await logAudit('user.email_changed', 'profiles', userId, { email });
 }
 
 export async function fetchAdmins(): Promise<Profile[]> {
@@ -117,12 +135,23 @@ export async function updateUser(userId: string, input: UpdateUserInput): Promis
 }
 
 export async function setUserActive(userId: string, active: boolean): Promise<void> {
-  const { error } = await supabase
-    .from('profiles')
-    .update({ is_active: active })
-    .eq('id', userId);
+  // Use the validated RPC so meaningful errors surface (master admin,
+  // self deactivation, last active admin) instead of a generic failure.
+  const { error } = await supabase.rpc('admin_set_user_active', {
+    p_user_id: userId,
+    p_active: active,
+  });
+  // Fall back to a direct update if the new RPC is not deployed yet.
+  if (error && /admin_set_user_active|PGRST202|42704|could not find|does not exist/i.test(error.message)) {
+    const { error: fallbackError } = await supabase
+      .from('profiles')
+      .update({ is_active: active })
+      .eq('id', userId);
+    if (fallbackError) throw fallbackError;
+    await logAudit(active ? 'user.activated' : 'user.deactivated', 'profiles', userId);
+    return;
+  }
   if (error) throw error;
-  await logAudit(active ? 'user.activated' : 'user.deactivated', 'profiles', userId);
 }
 
 export async function updateOwnProfile(userId: string, patch: { phone?: string | null }): Promise<void> {

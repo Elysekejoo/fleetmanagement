@@ -13,6 +13,7 @@ import { Modal } from '@/components/ui/Modal';
 import { StatusBadge, type StatusTone } from '@/components/ui/StatusBadge';
 import { Field, FieldError, FormRow, Input, Label } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
+import { friendlyError } from '@/lib/errors';
 import { useAuth } from '@/features/auth/AuthContext';
 import { fmtDate, fmtTime, todayIso } from '@/lib/utils';
 import { useRealtimeInvalidation } from '@/hooks/useRealtimeInvalidation';
@@ -57,7 +58,7 @@ export default function DriverDashboardPage() {
       toast.show('success', 'Trip started — GPS tracking active');
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Unable to start trip'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to start the trip. Please try again.')),
   });
 
   return (
@@ -166,7 +167,7 @@ function ActiveTripCard({ trip }: { trip: TripWithRelations }) {
       void queryClient.invalidateQueries({ queryKey: ['vehicles'] });
       void queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Unable to end trip'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to end the trip. Please try again.')),
   });
 
   return (

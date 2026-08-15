@@ -7,6 +7,7 @@ export type Json =
   | Json[];
 
 export type UserRole = 'admin' | 'employee' | 'driver';
+export type PasswordResetStatus = 'pending' | 'approved' | 'rejected';
 export type VehicleStatus = 'available' | 'assigned' | 'on_trip' | 'maintenance' | 'inactive';
 export type RequestStatus = 'pending' | 'approved' | 'rejected' | 'cancelled' | 'assigned' | 'completed';
 export type TripStatus = 'scheduled' | 'active' | 'completed' | 'cancelled';
@@ -25,8 +26,39 @@ export interface ProfileRow {
   license_category: string | null;
   license_expiry: string | null;
   is_active: boolean;
+  is_master_admin: boolean;
   created_at: string;
   updated_at: string;
+}
+
+export interface AppSettingsRow {
+  id: number;
+  system_name: string;
+  org_name: string;
+  org_line: string;
+  location_line: string;
+  footer_line_1: string;
+  footer_line_2: string;
+  hero_title: string;
+  hero_subtitle: string;
+  mission_title: string;
+  mission_text: string;
+  updated_at: string;
+  updated_by: string | null;
+}
+
+export interface PasswordResetRequestRow {
+  id: string;
+  user_id: string;
+  email: string;
+  full_name: string;
+  role: UserRole;
+  new_password_hash: string;
+  status: PasswordResetStatus;
+  rejection_reason: string | null;
+  reviewed_by: string | null;
+  submitted_at: string;
+  reviewed_at: string | null;
 }
 
 export interface DepartmentRow {
@@ -180,6 +212,11 @@ export interface Database {
       maintenance_records: TableDef<MaintenanceRecordRow, Omit<MaintenanceRecordRow, 'created_at'>>;
       notifications: TableDef<NotificationRow, Omit<NotificationRow, 'id' | 'created_at' | 'is_read'>>;
       audit_logs: TableDef<AuditLogRow, Omit<AuditLogRow, 'id' | 'created_at'>>;
+      app_settings: TableDef<AppSettingsRow, Partial<AppSettingsRow>>;
+      password_reset_requests: TableDef<
+        PasswordResetRequestRow,
+        Omit<PasswordResetRequestRow, 'id' | 'submitted_at' | 'new_password_hash' | 'status'>
+      >;
     };
     Views: Record<string, never>;
     Functions: {
@@ -256,6 +293,45 @@ export interface Database {
           p_user_id: string;
           p_new_password: string;
         };
+        Returns: undefined;
+      };
+      request_password_reset: {
+        Args: {
+          p_email: string;
+          p_last_used_password: string;
+          p_new_password: string;
+        };
+        Returns: undefined;
+      };
+      approve_password_reset: {
+        Args: {
+          p_request_id: string;
+        };
+        Returns: undefined;
+      };
+      reject_password_reset: {
+        Args: {
+          p_request_id: string;
+          p_reason: string;
+        };
+        Returns: undefined;
+      };
+      admin_update_email: {
+        Args: {
+          p_user_id: string;
+          p_email: string;
+        };
+        Returns: undefined;
+      };
+      admin_set_user_active: {
+        Args: {
+          p_user_id: string;
+          p_active: boolean;
+        };
+        Returns: undefined;
+      };
+      admin_reset_system: {
+        Args: Record<string, never>;
         Returns: undefined;
       };
     };

@@ -6,11 +6,13 @@ import {
   ClipboardList,
   Fuel,
   Home,
+  KeyRound,
   LayoutDashboard,
   ListChecks,
   MapPinned,
   PlusCircle,
   Route,
+  Settings,
   ShieldCheck,
   UserCog,
   UserRoundCog,
@@ -20,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/AuthContext';
 import { useI18n, type I18nKey } from '@/lib/i18n';
+import { useSettings } from '@/lib/settings';
 import { cn } from '@/lib/utils';
 import type { UserRole } from '@/types/database';
 
@@ -65,6 +68,13 @@ const adminNav: NavSection[] = [
       { to: '/admin/audit-logs', labelKey: 'navAuditLogs', icon: ShieldCheck },
     ],
   },
+  {
+    sectionKey: 'navSystem',
+    items: [
+      { to: '/admin/password-resets', labelKey: 'navPasswordResets', icon: KeyRound },
+      { to: '/admin/settings', labelKey: 'navSettings', icon: Settings },
+    ],
+  },
 ];
 
 const employeeNav: NavSection[] = [
@@ -104,6 +114,7 @@ interface SidebarProps {
 export function Sidebar({ open, onClose }: SidebarProps) {
   const { profile } = useAuth();
   const { t } = useI18n();
+  const { settings } = useSettings();
   const location = useLocation();
   if (!profile) return null;
 
@@ -133,8 +144,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               className="h-9 w-9 shrink-0 rounded-md object-contain"
             />
             <div className="min-w-0">
-              <div className="truncate text-[13px] font-semibold leading-tight text-white">MSH Rwanda</div>
-              <div className="truncate text-[10px] text-slate-400">USAID-IREME · FMS</div>
+              <div className="truncate text-[13px] font-semibold leading-tight text-white">{settings.org_name}</div>
+              <div className="truncate text-[10px] text-slate-400">{settings.org_line} · FMS</div>
             </div>
           </div>
           <button
@@ -187,9 +198,9 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         </nav>
 
         <div className="border-t border-white/10 px-4 py-3 text-[10px] leading-relaxed text-slate-500">
-          FMS v2.0 — MSH Rwanda
+          {settings.footer_line_1}
           <br />
-          USAID-IREME · Kigali, Rwanda
+          {settings.footer_line_2}
         </div>
       </aside>
     </>

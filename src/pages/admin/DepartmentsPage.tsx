@@ -12,6 +12,7 @@ import { Modal } from '@/components/ui/Modal';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Field, FieldError, Input, Label, Textarea } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
+import { friendlyError } from '@/lib/errors';
 import { fmtDate } from '@/lib/utils';
 import type { Department } from '@/types/domain';
 
@@ -54,7 +55,7 @@ export default function DepartmentsPage() {
       setCreating(false);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to save the department. Please try again.')),
   });
 
   const deleteMutation = useMutation({
@@ -64,7 +65,7 @@ export default function DepartmentsPage() {
       setDeleting(null);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Delete failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to delete the department. Please try again.')),
   });
 
   const columns: Column<Department>[] = [

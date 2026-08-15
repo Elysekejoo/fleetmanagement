@@ -8,6 +8,7 @@ import { PageBody, PageHeader, Panel } from '@/components/ui/Page';
 import { Button } from '@/components/ui/Button';
 import { Field, FieldError, FormRow, Input, Label } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
+import { friendlyError } from '@/lib/errors';
 import { useAuth } from '@/features/auth/AuthContext';
 import { updateOwnProfile } from '@/services/profiles';
 import { fetchDepartments } from '@/services/departments';
@@ -68,7 +69,7 @@ export default function AccountPage() {
       await refreshProfile();
       toast.show('success', 'Profile updated');
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Update failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to update your profile. Please try again.')),
   });
 
   const {
@@ -88,7 +89,7 @@ export default function AccountPage() {
       if (error) throw error;
     },
     onSuccess: () => toast.show('success', 'Password updated successfully'),
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Password change failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to change your password. Please try again.')),
   });
 
   if (!profile) return null;

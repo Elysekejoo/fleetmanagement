@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Pencil, Plus, UserRound, UserRoundX } from 'lucide-react';
-import { fetchProfiles, createUser, updateUser, setUserActive } from '@/services/profiles';
+import { fetchProfiles, createUser, updateUser, setUserActive, adminChangeUserEmail } from '@/services/profiles';
 import { fetchDepartments } from '@/services/departments';
 import { DataTable, FilterSelect, type Column } from '@/components/ui/DataTable';
 import { PageBody, PageHeader } from '@/components/ui/Page';
@@ -14,6 +14,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { Field, FieldError, FormRow, Input, Label, Select } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
+import { friendlyError } from '@/lib/errors';
 import { useAuth } from '@/features/auth/AuthContext';
 import type { Profile, UserRole } from '@/types/domain';
 
@@ -32,7 +33,7 @@ const userSchema = z.object({
 });
 
 function userFormSchema(isEdit: boolean) {
-  return isEdit ? userSchema.omit({ email: true, password: true }) : userSchema;
+  return isEdit ? userSchema.omit({ password: true }) : userSchema;
 }
 
 type UserFormValues = z.infer<typeof userSchema>;
@@ -71,6 +72,10 @@ export default function UsersPage() {
   const saveMutation = useMutation({
     mutationFn: async (values: UserFormValues) => {
       if (editing) {
+        const emailChanged = values.email.trim().toLowerCase() !== editing.email.trim().toLowerCase();
+        if (emailChanged) {
+          await adminChangeUserEmail(editing.id, values.email.trim());
+        }
         await updateUser(editing.id, {
           fullName: values.fullName,
           phone: values.phone || null,
@@ -99,12 +104,12 @@ export default function UsersPage() {
       }
     },
     onSuccess: () => {
-      toast.show('success', editing ? 'User updated' : 'User account created');
+      toast.show('success', editing ? 'User details updated' : 'User account created');
       setEditing(null);
       setCreating(false);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to save the user. Please try again.')),
   });
 
   const toggleActiveMutation = useMutation({
@@ -114,7 +119,7 @@ export default function UsersPage() {
       setDeactivating(null);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to update this user. Please try again.')),
   });
 
   const filtered = useMemo(() => {
@@ -326,8 +331,13 @@ function UserFormModal({
           </Field>
           <Field>
             <Label required>Email Address</Label>
-            <Input type="email" placeholder="name@msh.rw" disabled={Boolean(user)} {...register('email')} />
+            <Input type="email" placeholder="name@msh.rw" {...register('email')} />
             <FieldError message={errors.email?.message} />
+            {user && (
+              <p className="mt-1.5 text-[11px] leading-snug text-ink-3">
+                Changing the email also updates the sign-in address for this user.
+              </p>
+            )}
           </Field>
         </FormRow>
         {!user && (

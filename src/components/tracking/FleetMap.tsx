@@ -11,16 +11,39 @@ const STATUS_COLORS = {
   stopped: '#B7791F',
 } as const;
 
-const CAR_SVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>`;
+// Small, simple, widely-recognized car icon (lucide "car"). Not an emoji.
+const CAR_SVG = `<svg width="15" height="15" viewBox="0 0 24 24" fill="#334155" stroke="#334155" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>`;
 
-function createVehicleIcon(color: string): L.DivIcon {
+function createVehicleIcon(color: string, heading = 0): L.DivIcon {
   return L.divIcon({
     className: '',
-    html: `<div style="width:32px;height:32px;border-radius:9999px;background:#fff;border:2px solid ${color};box-shadow:0 1px 3px rgba(11,22,40,.3);display:flex;align-items:center;justify-content:center;">${CAR_SVG}</div>`,
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -18],
+    html: `<div style="width:30px;height:30px;border-radius:9999px;background:#fff;border:2px solid ${color};box-shadow:0 1px 3px rgba(11,22,40,.4);display:flex;align-items:center;justify-content:center;"><span class="fleet-car" style="display:block;transform:rotate(${heading}deg);transform-origin:center;transition:transform 300ms linear;">${CAR_SVG}</span></div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -16],
   });
+}
+
+function applyVehicleIcon(marker: L.Marker, color: string, heading: number): void {
+  const el = marker.getElement();
+  if (!el) return;
+  const car = el.querySelector('.fleet-car') as HTMLElement | null;
+  if (!car) return;
+  car.style.transform = `rotate(${heading}deg)`;
+  const ring = car.parentElement as HTMLElement | null;
+  if (ring) ring.style.borderColor = color;
+}
+
+function normalizeHeading(heading: number | null, previous: number | undefined): number {
+  if (heading == null) return previous ?? 0;
+  let h = ((heading % 360) + 360) % 360;
+  if (previous != null) {
+    let delta = h - previous;
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+    h = previous + delta;
+  }
+  return h;
 }
 
 function popupHtml(v: VehicleLocation): string {
@@ -58,6 +81,8 @@ export function FleetMap({ locations, isDemo = false, center = [-1.9706, 29.8739
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<Map<string, L.Marker>>(new Map());
+  const simRef = useRef<Map<string, { prev: [number, number]; next: [number, number]; t: number }>>(new Map());
+  const headingsRef = useRef<Map<string, number>>(new Map());
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -73,43 +98,77 @@ export function FleetMap({ locations, isDemo = false, center = [-1.9706, 29.8739
       map.remove();
       mapRef.current = null;
       markersRef.current.clear();
+      simRef.current.clear();
+      headingsRef.current.clear();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Place / update markers whenever live locations change.
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
 
+    const wasEmptyBefore = markersRef.current.size === 0;
     const seen = new Set<string>();
+
     locations.forEach((loc) => {
-      const marker = markersRef.current.get(loc.vehicle.id);
       const point: [number, number] = [loc.latitude, loc.longitude];
+      const marker = markersRef.current.get(loc.vehicle.id);
+      const heading = normalizeHeading(loc.heading, headingsRef.current.get(loc.vehicle.id));
+      headingsRef.current.set(loc.vehicle.id, heading);
+
       if (marker) {
-        marker.setLatLng(point);
-        marker.setIcon(createVehicleIcon(STATUS_COLORS[loc.status]));
+        const prev = marker.getLatLng();
+        simRef.current.set(loc.vehicle.id, { prev: [prev.lat, prev.lng], next: point, t: 0 });
+        applyVehicleIcon(marker, loc.status, heading);
         marker.bindPopup(popupHtml(loc));
       } else {
-        const m = L.marker(point, { icon: createVehicleIcon(STATUS_COLORS[loc.status]) })
+        const m = L.marker(point, { icon: createVehicleIcon(STATUS_COLORS[loc.status], heading) })
           .addTo(map)
           .bindPopup(popupHtml(loc));
         markersRef.current.set(loc.vehicle.id, m);
+        simRef.current.set(loc.vehicle.id, { prev: point, next: point, t: 1 });
       }
       seen.add(loc.vehicle.id);
     });
+
     markersRef.current.forEach((marker, id) => {
-      if (!seen.has(id)) map.removeLayer(marker);
-    });
-    markersRef.current.forEach((_m, id) => {
-      if (!seen.has(id)) markersRef.current.delete(id);
+      if (seen.has(id)) return;
+      map.removeLayer(marker);
+      markersRef.current.delete(id);
+      simRef.current.delete(id);
+      headingsRef.current.delete(id);
     });
 
-    const hasLocations = locations.length > 0;
-    const wasEmptyBefore = markersRef.current.size === 0;
-    if (hasLocations && wasEmptyBefore) {
+    if (wasEmptyBefore && locations.length > 0) {
       const bounds = L.latLngBounds(locations.map((l) => [l.latitude, l.longitude] as [number, number]));
       map.fitBounds(bounds, { padding: [40, 40], maxZoom: 11 });
     }
+  }, [locations]);
+
+  // Smooth glide between recorded positions (animated, car keeps moving on screen).
+  useEffect(() => {
+    let raf: number | null = null;
+    const tick = () => {
+      let changed = false;
+      simRef.current.forEach((sim, id) => {
+        sim.t = Math.min(1, sim.t + (16 / 1000) / 4.5);
+        const marker = markersRef.current.get(id);
+        if (!marker) return;
+        const lat = sim.prev[0] + (sim.next[0] - sim.prev[0]) * sim.t;
+        const lng = sim.prev[1] + (sim.next[1] - sim.prev[1]) * sim.t;
+        marker.setLatLng([lat, lng]);
+        changed = true;
+      });
+      if (changed) raf = window.requestAnimationFrame(tick);
+      else raf = null;
+    };
+    if (simRef.current.size > 0 && raf == null) raf = window.requestAnimationFrame(tick);
+    return () => {
+      if (raf != null) window.cancelAnimationFrame(raf);
+      raf = null;
+    };
   }, [locations]);
 
   function handleSelect(loc: VehicleLocation) {

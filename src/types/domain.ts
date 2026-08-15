@@ -1,9 +1,11 @@
 import type {
+  AppSettingsRow,
   DepartmentRow,
   FuelRecordRow,
   GpsLocationRow,
   MaintenanceRecordRow,
   NotificationRow,
+  PasswordResetRequestRow,
   ProfileRow,
   TravelRequestRow,
   TripRow,
@@ -20,8 +22,10 @@ export type {
   FuelRecordRow,
   MaintenanceRecordRow,
   NotificationRow,
+  AppSettingsRow,
+  PasswordResetRequestRow,
 } from '@/types/database';
-export type { UserRole, VehicleStatus, RequestStatus, TripStatus, Priority } from '@/types/database';
+export type { UserRole, VehicleStatus, RequestStatus, TripStatus, Priority, PasswordResetStatus } from '@/types/database';
 
 export type Profile = ProfileRow;
 export type Department = DepartmentRow;
@@ -32,6 +36,8 @@ export type GpsLocation = GpsLocationRow;
 export type FuelRecord = FuelRecordRow;
 export type MaintenanceRecord = MaintenanceRecordRow;
 export type Notification = NotificationRow;
+export type AppSettings = AppSettingsRow;
+export type PasswordResetRequest = PasswordResetRequestRow;
 
 export type VehicleWithDriver = Vehicle & { driver: Profile | null };
 

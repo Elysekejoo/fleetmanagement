@@ -34,9 +34,13 @@ export function Label({ children, htmlFor, required }: { children: React.ReactNo
   );
 }
 
-export function FieldError({ message }: { message?: string }) {
+export function FieldError({ message, id }: { message?: string; id?: string }) {
   if (!message) return null;
-  return <p className="mt-1.5 text-xs text-danger">{message}</p>;
+  return (
+    <p id={id} role={id ? 'alert' : undefined} className="mt-1.5 text-xs text-danger">
+      {message}
+    </p>
+  );
 }
 
 export function FormRow({ children, cols = 2 }: { children: React.ReactNode; cols?: 2 | 3 }) {

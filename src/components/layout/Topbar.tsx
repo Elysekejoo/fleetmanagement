@@ -5,6 +5,7 @@ import { Bell, CheckCheck, Globe, LogOut, Menu, Volume2, VolumeX, WifiOff } from
 import { useAuth } from '@/features/auth/AuthContext';
 import { useToast } from '@/components/ui/Toast';
 import { useI18n } from '@/lib/i18n';
+import { useSettings } from '@/lib/settings';
 import { initials, timeAgo } from '@/lib/utils';
 import { fetchNotifications, markAllNotificationsRead, subscribeNotifications } from '@/services/notificationQueries';
 import { isNotificationSoundEnabled, playNotificationSound, setNotificationSoundEnabled } from '@/lib/sound';
@@ -14,6 +15,7 @@ import type { Notification } from '@/types/domain';
 export function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => void; title: string }) {
   const { profile, signOut } = useAuth();
   const { t, lang, setLang } = useI18n();
+  const { settings } = useSettings();
   const navigate = useNavigate();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -79,8 +81,8 @@ export function Topbar({ onOpenSidebar, title }: { onOpenSidebar: () => void; ti
         <Menu className="h-5 w-5" />
       </button>
 
-      <img src="/favicon.png" alt="MSH Rwanda logo" className="h-6 w-6 shrink-0 rounded object-contain" />
-      <span className="hidden text-[13px] font-semibold text-ink md:block">{t('shortOrg')}</span>
+      <img src="/favicon.png" alt={settings.org_name} className="h-6 w-6 shrink-0 rounded object-contain" />
+      <span className="hidden text-[13px] font-semibold text-ink md:block">{settings.system_name}</span>
       <span className="hidden text-[13px] text-ink-3 md:block" aria-hidden="true">
         /
       </span>

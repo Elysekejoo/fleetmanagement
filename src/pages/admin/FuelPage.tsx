@@ -13,6 +13,7 @@ import { Modal } from '@/components/ui/Modal';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Field, FieldError, FormRow, Input, Label, Select } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
+import { friendlyError } from '@/lib/errors';
 import { useAuth } from '@/features/auth/AuthContext';
 import { fmtDate, fmtRwf, monthStartIso, todayIso } from '@/lib/utils';
 import type { FuelRecordWithRelations } from '@/types/domain';
@@ -54,7 +55,7 @@ export default function FuelPage() {
       setOpen(false);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to save the fuel record. Please try again.')),
   });
 
   const deleteMutation = useMutation({
@@ -64,7 +65,7 @@ export default function FuelPage() {
       setDeleting(null);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to save the fuel record. Please try again.')),
   });
 
   const filtered = useMemo(() => {

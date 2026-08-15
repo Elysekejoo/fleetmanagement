@@ -9,6 +9,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { useToast } from '@/components/ui/Toast';
 import { useAuth } from '@/features/auth/AuthContext';
+import { friendlyError } from '@/lib/errors';
 import { fmtDate, fmtDateTime } from '@/lib/utils';
 import { requestTone } from '@/pages/admin/DashboardPage';
 import type { RequestWithRelations } from '@/types/domain';
@@ -34,7 +35,7 @@ export default function MyRequestsPage() {
       void queryClient.invalidateQueries({ queryKey: ['my-requests'] });
       void queryClient.invalidateQueries({ queryKey: ['requests'] });
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Unable to withdraw request'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to withdraw this request. Please try again.')),
   });
 
   const columns: Column<RequestWithRelations>[] = [

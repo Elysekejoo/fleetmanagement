@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import LoginPage from '@/features/auth/LoginPage';
+import ForgotPasswordPage from '@/features/auth/ForgotPasswordPage';
 import { ProtectedRoute, RoleIndexRoute } from '@/routes/guards';
 import { InitialLoader } from '@/components/ui/InitialLoader';
 import { useAuth } from '@/features/auth/AuthContext';
@@ -15,6 +16,8 @@ import MaintenancePage from '@/pages/admin/MaintenancePage';
 import ReportsPage from '@/pages/admin/ReportsPage';
 import AuditLogsPage from '@/pages/admin/AuditLogsPage';
 import DepartmentsPage from '@/pages/admin/DepartmentsPage';
+import SettingsPage from '@/pages/admin/SettingsPage';
+import PasswordResetsPage from '@/pages/admin/PasswordResetsPage';
 import EmployeeDashboardPage from '@/pages/employee/DashboardPage';
 import NewRequestPage from '@/pages/employee/NewRequestPage';
 import MyRequestsPage from '@/pages/employee/MyRequestsPage';
@@ -28,6 +31,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/" element={<RoleIndexRoute />} />
 
       <Route element={<ProtectedRoute />}>
@@ -43,6 +47,8 @@ export default function App() {
           <Route path="/admin/reports" element={<ReportsPage />} />
           <Route path="/admin/audit-logs" element={<AuditLogsPage />} />
           <Route path="/admin/departments" element={<DepartmentsPage />} />
+          <Route path="/admin/password-resets" element={<PasswordResetsPage />} />
+          <Route path="/admin/settings" element={<SettingsPage />} />
         </Route>
 
         <Route element={<AppShell role="employee" />}>

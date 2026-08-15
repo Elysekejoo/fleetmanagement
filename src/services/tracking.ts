@@ -50,6 +50,7 @@ function builtinDriver(fullName: string, email: string): Profile {
     license_category: null,
     license_expiry: null,
     is_active: true,
+    is_master_admin: false,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
@@ -62,25 +63,6 @@ interface SimVehicle {
   waypointIndex: number;
   progress: number;
   speedKph: number;
-}
-
-function waypointRing(lat: number, lng: number, radiusDeg: number, count: number): Array<[number, number]> {
-  const points: Array<[number, number]> = [];
-  for (let i = 0; i < count; i++) {
-    const a = (i / count) * Math.PI * 2;
-    points.push([lat + Math.sin(a) * radiusDeg, lng + Math.cos(a) * radiusDeg]);
-  }
-  return points;
-}
-
-function distanceKm(a: [number, number], b: [number, number]): number {
-  const R = 6371;
-  const dLat = ((b[0] - a[0]) * Math.PI) / 180;
-  const dLng = ((b[1] - a[1]) * Math.PI) / 180;
-  const s =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((a[0] * Math.PI) / 180) * Math.cos((b[0] * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
 }
 
 function bearing(a: [number, number], b: [number, number]): number {
@@ -101,7 +83,13 @@ function createDemoFleet(): SimVehicle[] {
     {
       vehicle: builtinVehicle('DEMO-NYG-01', 'Toyota', 'Land Cruiser', 2021, '4WD/SUV'),
       driver: builtinDriver('Jean Bosco Habimana', 'demo.nyagatare@msh.rw'),
-      waypoints: waypointRing(-1.2869, 30.3189, 0.035, 7),
+      // Nyagatare → Byumba → Kigali → Rwamagana → Nyagatare
+      waypoints: [
+        [-1.2869, 30.3189],
+        [-1.5765, 30.077],
+        [-1.9441, 30.0619],
+        [-1.9538, 30.4421],
+      ],
       waypointIndex: 0,
       progress: 0,
       speedKph: 42,
@@ -109,18 +97,16 @@ function createDemoFleet(): SimVehicle[] {
     {
       vehicle: builtinVehicle('DEMO-RUZ-01', 'Toyota', 'Hilux', 2020, 'Pickup/Truck'),
       driver: builtinDriver('Claudine Uwase', 'demo.rusizi@msh.rw'),
-      waypoints: waypointRing(-2.484, 28.897, 0.03, 6),
-      waypointIndex: 2,
-      progress: 0.4,
-      speedKph: 28,
-    },
-    {
-      vehicle: builtinVehicle('DEMO-KGL-01', 'Isuzu', 'D-Max', 2022, 'Pickup/Truck'),
-      driver: builtinDriver('Eric Niyonzima', 'demo.kigali@msh.rw'),
-      waypoints: waypointRing(-1.9441, 30.0619, 0.045, 8),
-      waypointIndex: 5,
-      progress: 0.2,
-      speedKph: 12,
+      // Rusizi → Huye → Nyanza → Kigali → Rusizi
+      waypoints: [
+        [-2.484, 28.897],
+        [-2.5234, 29.7459],
+        [-2.3512, 29.7418],
+        [-1.9441, 30.0619],
+      ],
+      waypointIndex: 1,
+      progress: 0.25,
+      speedKph: 35,
     },
   ];
 }
@@ -128,24 +114,34 @@ function createDemoFleet(): SimVehicle[] {
 async function loadRegistryFleet(): Promise<SimVehicle[] | null> {
   try {
     const [vehicles, drivers] = await Promise.all([fetchVehicles(), fetchDrivers()]);
-    const active = vehicles.filter((v) => v.status !== 'inactive' && v.gps_device_id);
+    const active = vehicles
+      .filter((v) => v.status !== 'inactive' && v.gps_device_id)
+      .slice(0, 2);
     if (active.length === 0) return null;
     const driverMap = new Map(drivers.map((d) => [d.id, d]));
-    const bases: Array<[number, number]> = [
-      [-1.2869, 30.3189],
-      [-2.484, 28.897],
-      [-1.9441, 30.0619],
+    // R1: Nyagatare → Byumba → Kigali,  R2: Rusizi → Huye → Kigali
+    const routes: Array<Array<[number, number]>> = [
+      [
+        [-1.2869, 30.3189],
+        [-1.5765, 30.077],
+        [-1.9441, 30.0619],
+      ],
+      [
+        [-2.484, 28.897],
+        [-2.5234, 29.7459],
+        [-2.3512, 29.7418],
+        [-1.9441, 30.0619],
+      ],
     ];
     return active.map((vehicle, i) => {
-      const base = bases[i % bases.length];
-      const spin = Math.floor(i / bases.length);
+      const waypoints = routes[i % routes.length] ?? routes[0];
       return {
         vehicle,
         driver: driverMap.get(vehicle.current_driver_id ?? '') ?? null,
-        waypoints: waypointRing(base[0], base[1], 0.03 + spin * 0.015, 6 + spin),
-        waypointIndex: (i * 2) % 6,
-        progress: (i % 5) / 5,
-        speedKph: 8 + ((i * 13) % 45),
+        waypoints,
+        waypointIndex: 0,
+        progress: (i % 10) / 10,
+        speedKph: 25 + ((i * 17) % 40),
       };
     });
   } catch {
@@ -156,7 +152,7 @@ async function loadRegistryFleet(): Promise<SimVehicle[] | null> {
 class DemoTrackingSource implements TrackingSource {
   readonly mode: TrackingMode = 'demo';
   private fleet: SimVehicle[] | null = null;
-  private lastTick = 0;
+  private lastTick = Date.now();
 
   async load(): Promise<VehicleLocation[]> {
     if (!this.fleet) {
@@ -175,18 +171,18 @@ class DemoTrackingSource implements TrackingSource {
     if (!this.fleet) return;
     const now = Date.now();
     if (this.lastTick > 0) {
-      const elapsedHours = (now - this.lastTick) / 3_600_000;
       for (const sim of this.fleet) {
-        const from = sim.waypoints[sim.waypointIndex];
-        const to = sim.waypoints[(sim.waypointIndex + 1) % sim.waypoints.length];
-        const legKm = distanceKm(from, to);
-        sim.progress += (sim.speedKph * elapsedHours) / legKm;
+        const n = sim.waypoints.length;
+        if (n < 2) continue;
+        // Advance ~16% of the current leg per tick (~30s to finish a leg at 5s ticks),
+        // so cars always visibly travel between waypoints no matter the zoom level.
+        sim.progress += 0.16;
         if (sim.progress >= 1) {
           sim.progress = 0;
-          sim.waypointIndex = (sim.waypointIndex + 1) % sim.waypoints.length;
+          sim.waypointIndex = (sim.waypointIndex + 1) % n;
         }
         const wobble = Math.sin(now / 60_000 + sim.waypointIndex) * 6;
-        sim.speedKph = Math.max(0, Math.round(sim.speedKph + wobble * 4) / 2);
+        sim.speedKph = Math.max(8, Math.round(sim.speedKph + wobble * 4) / 2);
       }
     }
     this.lastTick = now;
@@ -216,9 +212,13 @@ class DemoTrackingSource implements TrackingSource {
 
 class LiveTrackingSource implements TrackingSource {
   readonly mode: TrackingMode = 'live';
+  private fallback: DemoTrackingSource | null = null;
 
   async load(): Promise<VehicleLocation[]> {
-    return fetchVehicleLocations();
+    const real = await fetchVehicleLocations();
+    if (real.length > 0) return real;
+    if (!this.fallback) this.fallback = new DemoTrackingSource();
+    return this.fallback.load();
   }
 
   subscribe(onChange: () => void): () => void {

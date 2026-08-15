@@ -5,6 +5,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import App from '@/App';
 import { queryClient } from '@/lib/queryClient';
 import { I18nProvider } from '@/lib/i18n';
+import { SettingsProvider } from '@/lib/settings';
 import { AuthProvider } from '@/features/auth/AuthContext';
 import { ToastProvider } from '@/components/ui/Toast';
 import { isPwaEnabled } from '@/config/env';
@@ -33,9 +34,11 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <I18nProvider>
           <AuthProvider>
-            <ToastProvider>
-              <App />
-            </ToastProvider>
+            <SettingsProvider>
+              <ToastProvider>
+                <App />
+              </ToastProvider>
+            </SettingsProvider>
           </AuthProvider>
         </I18nProvider>
       </BrowserRouter>

@@ -12,6 +12,7 @@ import { Modal } from '@/components/ui/Modal';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { Field, FormRow, Label, Select } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
+import { friendlyError } from '@/lib/errors';
 import { fmtDate, fmtDateTime } from '@/lib/utils';
 import { useAuth } from '@/features/auth/AuthContext';
 import { requestTone } from '@/pages/admin/DashboardPage';
@@ -66,17 +67,17 @@ export default function RequestsPage() {
       setApproving(null);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to approve this request. Please try again.')),
   });
 
   const rejectMutation = useMutation({
     mutationFn: (reason: string) => rejectRequest(rejecting!.id, profile!.id, reason),
     onSuccess: () => {
-      toast.show('error', 'Request rejected');
+      toast.show('success', 'Request rejected and the employee has been notified');
       setRejecting(null);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to reject this request. Please try again.')),
   });
 
   const filtered = useMemo(() => {

@@ -8,6 +8,7 @@ import { Modal } from '@/components/ui/Modal';
 import { StatusBadge, type StatusTone } from '@/components/ui/StatusBadge';
 import { InfoRow } from '@/components/ui/Page';
 import { useToast } from '@/components/ui/Toast';
+import { friendlyError } from '@/lib/errors';
 import { useAuth } from '@/features/auth/AuthContext';
 import { fmtDate, fmtDateTime } from '@/lib/utils';
 import { useRealtimeInvalidation } from '@/hooks/useRealtimeInvalidation';
@@ -42,7 +43,7 @@ export default function MyTripsPage() {
       void queryClient.invalidateQueries({ queryKey: ['trips'] });
       void queryClient.invalidateQueries({ queryKey: ['vehicles'] });
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Unable to start trip'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to start the trip. Please try again.')),
   });
 
   const columns: Column<TripWithRelations>[] = [

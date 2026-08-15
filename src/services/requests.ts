@@ -128,6 +128,14 @@ export type ApproveInput = {
 export async function approveRequest(input: ApproveInput): Promise<void> {
   const request = await fetchRequestById(input.requestId);
   if (!request) throw new Error('Request not found');
+  if (request.status !== 'pending' && request.status !== 'assigned') {
+    throw new Error(
+      `This request is "${request.status}" and can no longer be approved or assigned.`,
+    );
+  }
+  if (!input.vehicleId || !input.driverId) {
+    throw new Error('A vehicle and a driver are required before a trip can be assigned.');
+  }
 
   const { error } = await supabase
     .from('travel_requests')
@@ -137,20 +145,33 @@ export async function approveRequest(input: ApproveInput): Promise<void> {
       approved_at: new Date().toISOString(),
       assigned_vehicle_id: input.vehicleId,
       assigned_driver_id: input.driverId,
+      rejection_reason: null,
       notes: input.notes ?? request.notes,
     })
     .eq('id', input.requestId);
   if (error) throw error;
 
-  await supabase.from('vehicles').update({ status: 'assigned' }).eq('id', input.vehicleId);
+  const { error: vehicleError } = await supabase
+    .from('vehicles')
+    .update({ status: 'assigned' })
+    .eq('id', input.vehicleId);
+  if (vehicleError) throw vehicleError;
 
+  // Sync (or create) the linked trip so reassigning a partially
+  // assigned request actually changes the vehicle and driver.
   const { data: existingTrip, error: tripQueryError } = await supabase
     .from('trips')
     .select('id')
     .eq('request_id', input.requestId)
     .maybeSingle();
   if (tripQueryError) throw tripQueryError;
-  if (!existingTrip) {
+  if (existingTrip) {
+    const { error: tripUpdateError } = await supabase
+      .from('trips')
+      .update({ vehicle_id: input.vehicleId, driver_id: input.driverId, status: 'scheduled' })
+      .eq('id', existingTrip.id);
+    if (tripUpdateError) throw tripUpdateError;
+  } else {
     const { error: tripError } = await supabase.from('trips').insert({
       request_id: input.requestId,
       vehicle_id: input.vehicleId,

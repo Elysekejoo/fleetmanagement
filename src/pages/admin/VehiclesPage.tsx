@@ -14,6 +14,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { StatusBadge, type StatusTone } from '@/components/ui/StatusBadge';
 import { Field, FieldError, FormRow, Input, Label, Select } from '@/components/ui/Field';
 import { useToast } from '@/components/ui/Toast';
+import { friendlyError } from '@/lib/errors';
 import { fmtNumber } from '@/lib/utils';
 import type { Vehicle } from '@/types/domain';
 
@@ -82,7 +83,7 @@ export default function VehiclesPage() {
       setCreating(false);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to complete this action. Please try again.')),
   });
 
   const assignMutation = useMutation({
@@ -92,7 +93,7 @@ export default function VehiclesPage() {
       toast.show('success', 'Vehicle assignment updated');
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to complete this action. Please try again.')),
   });
 
   const deleteMutation = useMutation({
@@ -102,7 +103,7 @@ export default function VehiclesPage() {
       setDeleting(null);
       invalidate();
     },
-    onError: (err) => toast.show('error', err instanceof Error ? err.message : 'Operation failed'),
+    onError: (err) => toast.show('error', friendlyError(err, 'Unable to complete this action. Please try again.')),
   });
 
   const filtered = useMemo(() => {

@@ -18,6 +18,8 @@ const pageTitles: Record<string, string> = {
   'admin/maintenance': 'Maintenance Management',
   'admin/reports': 'Reports & Analytics',
   'admin/audit-logs': 'Audit Logs',
+  'admin/password-resets': 'Password Reset Requests',
+  'admin/settings': 'System Settings',
   'employee/dashboard': 'My Dashboard',
   'employee/requests': 'My Travel Requests',
   'employee/requests/new': 'New Travel Request',
